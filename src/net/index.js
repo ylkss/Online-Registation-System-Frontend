@@ -96,7 +96,7 @@ function post(url, data, success, failure = defaultFailure){
  * 登录请求
  * 由于使用Spring Security，登录请求需要特殊处理，添加特定的请求头
  */
-function passwordLogin(form, success, failure = defaultFailure){
+function login(form, success, failure = defaultFailure){
     internalPost("/api/auth/login", {
         username: form.username,
         password: form.password,
@@ -123,4 +123,4 @@ function logout(success, failure = defaultFailure){
     }, failure);
 }
 
-export { logout, passwordLogin, post, get, unAuth}
+export { logout, login, post, get, unAuth}

@@ -1,8 +1,9 @@
 <script setup>
-import {reactive, ref} from "vue";
+import {computed, reactive, ref} from "vue";
 import {EditPen, Lock, Phone, User} from "@element-plus/icons-vue";
 import router from "@/router/index.js";
-import {passwordLogin} from "@/net/index.js";
+import {login} from "@/net/index.js";
+import {askCode} from "@/net/auth/index.js";
 
 // 密码登录表单
 const passwordLoginFormRef = ref();
@@ -20,11 +21,11 @@ const rules = {
 
 // 验证码登录表单验证规则
 const phoneRules = {
-  phone: [
+  username: [
     {required: true, message: '请输入手机号'},
     {pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号'}
   ],
-  code: [
+  password: [
     {required: true, message: '请输入验证码'}
   ]
 }
@@ -38,8 +39,8 @@ const passwordLoginForm = reactive({
 
 // 手机验证码登录表单
 const phoneLoginForm = reactive({
-  phone: '',
-  code: '',
+  username: '',
+  password: '',
   remember: false
 })
 
@@ -47,7 +48,7 @@ const phoneLoginForm = reactive({
 function userLogin() {
   passwordLoginFormRef.value.validate((isValid) => {
     if(isValid) {
-      passwordLogin(passwordLoginForm, () => router.push("/"))
+      login(passwordLoginForm, () => router.push("/"))
     }
   });
 }
@@ -56,9 +57,32 @@ function userLogin() {
 const isPhoneValid = ref(false)
 const coldTime = ref(0)
 
+const coldTimeFontSize = computed(() => {
+  return coldTime.value > 10 ? '13px' : '14px'
+})
+
 const onValidate = (prop, isValid) => {
-  if(prop === 'phone')
+  if(prop === 'username')
     isPhoneValid.value = isValid
+}
+
+// 获取验证码
+const askCodeHandler = () => {
+  if(isPhoneValid.value) {
+    // 设置冷却时间
+    coldTime.value = 99
+    const timer = setInterval(() => {
+      coldTime.value--
+      if(coldTime.value === 0) {
+        clearInterval(timer)
+      }
+    }, 1000)
+    // 获取验证码
+    askCode({
+      phone: phoneLoginForm.username,
+      type: "phone-login"
+    })
+  }
 }
 </script>
 
@@ -115,8 +139,8 @@ const onValidate = (prop, isValid) => {
         <el-tab-pane label="手机验证码登录">
           <div class="phone-login-form">
             <el-form :model="phoneLoginForm" @validate="onValidate" :rules="phoneRules" ref="phoneLoginFormRef">
-              <el-form-item label="手机号：" prop="phone">
-                <el-input v-model="phoneLoginForm.phone" maxlength="11" type="text" placeholder="手机号">
+              <el-form-item label="手机号：" prop="username">
+                <el-input v-model="phoneLoginForm.username" maxlength="11" type="text" placeholder="手机号">
                   <template #prefix>
                     <el-icon>
                       <Phone/>
@@ -124,10 +148,10 @@ const onValidate = (prop, isValid) => {
                   </template>
                 </el-input>
               </el-form-item>
-              <el-form-item label="验证码：" prop="code">
+              <el-form-item label="验证码：" prop="password">
                 <el-row :gutter="10" style="width: 100%">
                   <el-col :span="17">
-                    <el-input v-model="phoneLoginForm.code" :maxlength="6" type="text" placeholder="请输入验证码">
+                    <el-input v-model="phoneLoginForm.password" :maxlength="6" type="text" placeholder="请输入验证码">
                       <template #prefix>
                         <el-icon><EditPen /></el-icon>
                       </template>
@@ -135,6 +159,8 @@ const onValidate = (prop, isValid) => {
                   </el-col>
                   <el-col :span="5">
                     <el-button type="success"
+                               @click="askCodeHandler"
+                               :style="{fontSize: coldTimeFontSize}"
                                :disabled="!isPhoneValid || coldTime > 0">
                       {{coldTime > 0 ? '请稍后 ' + coldTime + ' 秒' : '获取验证码'}}
                     </el-button>
