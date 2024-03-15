@@ -51,6 +51,11 @@ function userLogin() {
       login(passwordLoginForm, () => router.push("/"))
     }
   });
+  phoneLoginFormRef.value.validate((isValid) => {
+    if(isValid) {
+      login(phoneLoginForm, () => router.push("/"))
+    }
+  });
 }
 
 // 验证码请求冷却时间
@@ -167,9 +172,22 @@ const askCodeHandler = () => {
                   </el-col>
                 </el-row>
               </el-form-item>
+              <el-row style="margin-top: 5px">
+                <el-col :span="12" style="text-align: left">
+                  <el-form-item prop="remember">
+                    <el-checkbox v-model="passwordLoginForm.remember" label="记住我"/>
+                  </el-form-item>
+                </el-col>
+              </el-row>
             </el-form>
             <div style="margin-top: 20px">
-              <el-button style="width: 270px" type="success" plain>立即登录</el-button>
+              <el-button @click="userLogin" style="width: 270px" type="success" plain>立即登录</el-button>
+            </div>
+            <el-divider>
+              <span style="color: gray;">尚未拥有账户</span>
+            </el-divider>
+            <div style="margin-top: 30px">
+              <el-button plain style="width: 270px" type="warning" @click="router.push('/register')">注册</el-button>
             </div>
           </div>
         </el-tab-pane>
