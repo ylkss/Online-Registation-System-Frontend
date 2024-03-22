@@ -96,7 +96,7 @@ const askCodeHandler = () => {
     <div class="logo">
       <el-image src="https://element-plus.gitee.io/images/element-plus-logo.svg"/>
     </div>
-    <div class="login-form" type="card">
+    <div class="login-form">
       <el-tabs stretch class="login-tabs">
         <el-tab-pane label="密码登录">
           <div class="password-login-form">
@@ -137,7 +137,7 @@ const askCodeHandler = () => {
               <span style="color: gray;">尚未拥有账户</span>
             </el-divider>
             <div style="margin-top: 30px">
-              <el-button plain style="width: 270px" type="warning" @click="router.push('/register')">注册</el-button>
+              <el-button plain style="width: 270px" type="warning" @click="router.push('/auth/register')">注册</el-button>
             </div>
           </div>
         </el-tab-pane>
@@ -187,7 +187,7 @@ const askCodeHandler = () => {
               <span style="color: gray;">尚未拥有账户</span>
             </el-divider>
             <div style="margin-top: 30px">
-              <el-button plain style="width: 270px" type="warning" @click="router.push('/register')">注册</el-button>
+              <el-button plain style="width: 270px" type="warning" @click="router.push('/auth/register')">注册</el-button>
             </div>
           </div>
         </el-tab-pane>
