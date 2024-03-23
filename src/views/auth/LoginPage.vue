@@ -48,12 +48,12 @@ const phoneLoginForm = reactive({
 function userLogin() {
   passwordLoginFormRef.value.validate((isValid) => {
     if(isValid) {
-      login(passwordLoginForm, () => router.push("/"))
+      login(passwordLoginForm, () => router.push({path: '/'}) )
     }
   });
   phoneLoginFormRef.value.validate((isValid) => {
     if(isValid) {
-      login(phoneLoginForm, () => router.push("/"))
+      login(phoneLoginForm, () => router.push({path: '/'}))
     }
   });
 }

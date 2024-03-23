@@ -1,7 +1,7 @@
 <script setup>
 import {computed, reactive, ref} from "vue";
 import {Iphone, Lock, User} from "@element-plus/icons-vue";
-import {askCode} from "@/net/auth/index.js";
+import {askCode, register} from "@/net/auth/index.js";
 
 const registerFormRef = ref();
 const registerForm = reactive({
@@ -11,13 +11,48 @@ const registerForm = reactive({
   phone: '',
   code: ''
 })
+// 用户输入规则检查相关
+const validateUsername = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请输入用户名'))
+  } else if(!/^[a-zA-Z0-9\u4e00-\u9fa5]+$/.test(value)){
+    callback(new Error('用户名不能包含特殊字符，只能是中文/英文'))
+  } else {
+    callback()
+  }
+}
+const validatePassword = (rule, value, callback) => {
+  // 密码只能包含字母、数字、特殊字符，并且必须包含至少一个特殊字符
+  if (value === '') {
+    callback(new Error('请输入密码'))
+  } else if(!/^(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?~`]).*[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?~`]*$/.test(value)){
+    callback(new Error('密码必须包含至少一个特殊字符'))
+  } else {
+    callback()
+  }
+}
+const validateConfirmPassword = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请再次输入密码'))
+  } else if (value !== registerForm.password) {
+    callback(new Error("两次输入的密码不一致"))
+  } else {
+    callback()
+  }
+}
+
 // 表单验证规则
 const registerRules = {
   username: [
-    { required: true, message: '请输入用户名' }
+    { validator: validateUsername, trigger: ['blur', 'change'] },
+    { min: 3, max: 12, message: '用户名的长度必须在3-12个字符之间', trigger: ['blur', 'change'] },
   ],
   password: [
-    { required: true, message: '请输入密码'}
+    { validator: validatePassword, trigger: 'blur' },
+    { min: 6, max: 16, message: '密码的长度必须在6-16个字符之间', trigger: ['blur', 'change'] }
+  ],
+  confirmPassword: [
+    { validator: validateConfirmPassword, trigger: ['blur', 'change'] }
   ],
   phone: [
     {required: true, message: '请输入手机号'},
@@ -53,9 +88,23 @@ const askCodeHandler = () => {
     // 获取验证码
     askCode({
       phone: registerForm.phone,
-      type: "phone-login"
+      type: "phone-register"
     })
   }
+}
+
+// 注册请求
+const registerHandler = () => {
+  registerFormRef.value.validate((isValid) => {
+    if(isValid) {
+      register({
+        username: registerForm.username,
+        password: registerForm.password,
+        phone: registerForm.phone,
+        code: registerForm.code
+      })
+    }
+  });
 }
 </script>
 
@@ -132,7 +181,7 @@ const askCodeHandler = () => {
           </el-col>
           <el-col :span="12">
             <el-form-item prop="code">
-              <el-input v-model="registerForm.code" maxlength="20" type="text" placeholder="手机验证码">
+              <el-input v-model="registerForm.code" :maxlength="6" maxlength="20" type="text" placeholder="手机验证码">
                 <template #prefix>
                   <el-icon><Iphone /></el-icon>
                 </template>
@@ -150,7 +199,7 @@ const askCodeHandler = () => {
         </el-row>
       </el-form>
       <div style="margin-top: 30px">
-        <el-button style="width: 270px" type="warning" plain>立即注册</el-button>
+        <el-button @click="registerHandler" style="width: 270px" type="warning" plain>立即注册</el-button>
       </div>
     </div>
   </el-card>
