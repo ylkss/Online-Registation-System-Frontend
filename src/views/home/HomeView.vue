@@ -23,6 +23,7 @@ import Header from '@/components/layout/Header.vue';
   height: 100vh;
   width: 100vw;
   display: block;
+  overflow-x: hidden;
 
   .header {
     width: 100%;

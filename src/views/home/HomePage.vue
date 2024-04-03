@@ -1,6 +1,6 @@
 <script setup>
 
-import {DArrowRight} from "@element-plus/icons-vue";
+import {ChatDotRound, DArrowRight, DocumentCopy, Printer, User} from "@element-plus/icons-vue";
 
 const provinces = [
   "北京", "天津", "山西", "河北",
@@ -62,6 +62,66 @@ const provinces = [
         </div>
       </div>
     </div>
+
+    <!--      考生服务-->
+    <div class="service">
+      <div class="service-header">
+        <div class="service-header-title">
+          考生服务
+        </div>
+      </div>
+      <div class="service-main">
+        <div class="service-main-item-4">
+          <div class="regImg"><el-icon color="#6981a8" size="60"><Search /></el-icon></div>
+          <div class="service-main-item-content">
+            报名查询
+          </div>
+        </div>
+        <div class="service-main-item-5">
+          <div class="regImg"><el-icon color="#6981a8" size="60"><Printer /></el-icon></div>
+          <div class="service-main-item-content">
+            准考证打印
+          </div>
+        </div>
+        <div class="service-main-item-4">
+          <div class="regImg"><el-icon color="#6981a8" size="60"><DocumentCopy /></el-icon></div>
+          <div class="service-main-item-content">
+            成绩查询
+          </div>
+        </div>
+        <div class="service-main-item-5">
+          <div class="regImg"><el-icon color="#6981a8" size="60"><User /></el-icon></div>
+          <div class="service-main-item-content">
+            联系测试站
+          </div>
+        </div>
+        <div class="service-main-item-4">
+          <div class="regImg"><el-icon color="#6981a8" size="60"><ChatDotRound /></el-icon></div>
+          <div class="service-main-item-content">
+            在线咨询
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!--    相关连接-->
+    <div class="link">
+      <div class="link-header">
+        <div class="link-header-title">
+          相关连接
+        </div>
+      </div>
+      <div class="link-main">
+        <div class="link-main-content">
+          <div class="link-main-content-item">
+            <el-link :underline="false"  href="http://www.china-language.edu.cn/" target="_blank">中国语言文字网</el-link>
+          </div>
+          <div class="link-main-content-item">
+            <el-link :underline="false"  href="http://www.cltt.org/" target="_blank">国家普通话水平测试网</el-link>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -70,6 +130,9 @@ const provinces = [
   background-color: transparent;
 }
 .el-main{
+  padding: 0;
+}
+.el-header{
   padding: 0;
 }
 
@@ -167,6 +230,7 @@ const provinces = [
             width: 100%;
             height: 100%;
             border-radius: 5px;
+            cursor: pointer;
             border: 1px solid #79bbff;
           }
 
@@ -186,6 +250,111 @@ const provinces = [
             opacity: 1; /* 当鼠标悬停时，使得遮罩完全不透明 */
           }
         }
+      }
+    }
+  }
+}
+
+.service{
+  width: 100%;
+  height: 193px;
+
+  .service-header{
+    height: 63px;
+    background-color: #fde2e2;
+    border-bottom: 2px solid #f89898;
+
+    .service-header-title{
+      margin-top: 2px;
+      font-size: 35px;
+      font-weight: bold;
+      margin-left: 15px;
+    }
+  }
+
+  .service-main{
+    width: 100%;
+    height: 130px;
+    display: flex;
+    justify-content: space-between;
+    padding: 30px 12px 40px;
+
+    .service-main-item-4{
+      width: 188px;
+      height: 100%;
+      display: flex;
+      cursor: pointer;
+
+      .regImg{
+        width: 60px;
+        height: 60px;
+        margin-right: 16px;
+      }
+
+      .service-main-item-content{
+        display: flex;
+        align-items: center;
+        font-size: 28px;
+        font-weight: bold;
+        color: #6981a8;
+      }
+    }
+
+    .service-main-item-5{
+      width: 216px;
+      height: 100%;
+      display: flex;
+      cursor: pointer;
+
+      .regImg{
+        width: 60px;
+        height: 60px;
+        margin-right: 16px;
+      }
+
+      .service-main-item-content{
+        display: flex;
+        align-items: center;
+        font-size: 28px;
+        font-weight: bold;
+        color: #6981a8;
+      }
+    }
+  }
+}
+
+.link{
+  width: 100%;
+  height: 167px;
+
+  .link-header {
+    height: 63px;
+    background-color: #faecd8;
+    border-bottom: 2px solid #eebe77;
+
+    .link-header-title {
+      margin-top: 2px;
+      font-size: 35px;
+      font-weight: bold;
+      margin-left: 15px;
+    }
+  }
+
+  .link-main-content{
+    width: 100%;
+    height: 104px;
+    padding: 30px 0;
+    display: flex;
+
+    .link-main-content-item{
+      width: 200px;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .el-link {
+        font-size: 18px;
       }
     }
   }
