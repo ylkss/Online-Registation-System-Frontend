@@ -9,7 +9,11 @@ import Header from '@/components/layout/Header.vue';
     </div>
     <div class="main">
       <div class="router-main">
-        <RouterView/>
+        <router-view v-slot="{ Component }">
+          <transition name="el-fade-in-linear" mode="out-in">
+            <component :is="Component" style="height: 100%"/>
+          </transition>
+        </router-view>
       </div>
     </div>
     <div class="footer">

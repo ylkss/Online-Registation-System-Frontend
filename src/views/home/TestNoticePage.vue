@@ -53,7 +53,7 @@ npm install element-plus --save
 
 <template>
   <div class="test-notice">
-    <el-card>
+    <el-card style="margin-top: 25px">
       <div class="test-notice-title">
         <div @click="router.push('/')" class="title-back"><el-icon size="12"><DArrowLeft /></el-icon>返回</div>
         <div class="title-main">
