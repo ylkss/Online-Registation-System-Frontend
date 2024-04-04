@@ -90,3 +90,120 @@ Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js �
 ```shell
 npm install axios --save
 ```
+
+### v-md-preview 进阶版
+v-md-preview 进阶版可以简单实现前端markdown语法展示和编辑。
+进阶版编辑器左侧编辑区域使用 CodeMirror (opens new window)实现。
+
+优点：
+
+- 可以根据 CodeMirror 提供的 Api 来自定义扩展编辑区域功能，提高编辑体验。
+
+缺点：
+
+- 文件体积远大于轻量版
+
+#### 编辑器引入
+```javascript
+import { createApp } from 'vue';
+import VMdEditor from '@kangc/v-md-editor/lib/codemirror-editor';
+import '@kangc/v-md-editor/lib/style/codemirror-editor.css';
+import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
+import '@kangc/v-md-editor/lib/theme/style/github.css';
+
+// highlightjs
+import hljs from 'highlight.js';
+
+// codemirror 编辑器的相关资源
+import Codemirror from 'codemirror';
+// mode
+import 'codemirror/mode/markdown/markdown';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/css/css';
+import 'codemirror/mode/htmlmixed/htmlmixed';
+import 'codemirror/mode/vue/vue';
+// edit
+import 'codemirror/addon/edit/closebrackets';
+import 'codemirror/addon/edit/closetag';
+import 'codemirror/addon/edit/matchbrackets';
+// placeholder
+import 'codemirror/addon/display/placeholder';
+// active-line
+import 'codemirror/addon/selection/active-line';
+// scrollbar
+import 'codemirror/addon/scroll/simplescrollbars';
+import 'codemirror/addon/scroll/simplescrollbars.css';
+// style
+import 'codemirror/lib/codemirror.css';
+
+VMdEditor.Codemirror = Codemirror;
+VMdEditor.use(githubTheme, {
+  Hljs: hljs,
+});
+
+const app = createApp(/*...*/);
+
+app.use(VMdEditor);
+```
+
+#### 使用编辑器
+```vue
+<template>
+  <v-md-editor v-model="text" height="400px"></v-md-editor>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      text: '',
+    };
+  },
+};
+</script>
+```
+
+#### 预览组件安装
+```shell
+# use npm
+npm i @kangc/v-md-editor -S
+
+# use yarn
+yarn add @kangc/v-md-editor
+```
+
+#### 预览组件导入
+```javascript
+import { createApp } from 'vue';
+import VMdPreview from '@kangc/v-md-editor/lib/preview';
+import '@kangc/v-md-editor/lib/style/preview.css';
+import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
+import '@kangc/v-md-editor/lib/theme/style/github.css';
+
+// highlightjs
+import hljs from 'highlight.js';
+
+VMdPreview.use(githubTheme, {
+    Hljs: hljs,
+});
+
+const app = createApp(/*...*/);
+
+app.use(VMdPreview);
+```
+#### 预览组件使用
+```vue
+<template>
+  <v-md-preview :text="text"></v-md-preview>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        text: '',
+      };
+    },
+  };
+</script>
+```

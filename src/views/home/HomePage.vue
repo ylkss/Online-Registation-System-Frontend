@@ -1,6 +1,7 @@
 <script setup>
 
-import {ChatDotRound, DArrowRight, DocumentCopy, Printer, User} from "@element-plus/icons-vue";
+import {ArrowRight, ChatDotRound, DArrowRight, DocumentCopy, Printer, User} from "@element-plus/icons-vue";
+import router from "@/router/index.js";
 
 const provinces = [
   "北京", "天津", "山西", "河北",
@@ -36,7 +37,12 @@ const provinces = [
             <div class="test-notice-main">
               <div v-for="n in 6"  :key="n" class="test-notice-content">
                 <div class="test-notice-content-text">
-                  <el-link :underline="false">黎明职业大学普通话水平测试站5月份测试计划</el-link>
+                  <el-link
+                      @click="router.push({ path:'/test-notice', query: { id: n } })"
+                      :icon="ArrowRight"
+                      :underline="false">
+                    黎明职业大学普通话水平测试站5月份测试计划
+                  </el-link>
                 </div>
                 <div class="test-notice-content-time">
                   <el-text type="info" size="large">2024-02-25</el-text>
