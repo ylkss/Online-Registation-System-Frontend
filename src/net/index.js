@@ -1,5 +1,7 @@
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import {userInfo} from "@/net/user/index.js";
+import {useUserStore} from "@/store/index.js";
 
 const authItemName = "access_token";
 
@@ -24,6 +26,8 @@ function accessHeader() {
 // 保存Token
 function storeAccessToken(token, remember, expire) {
     const authObj = {token: token, expire: expire};
+    // 存储前先移除原有token
+    removeAccessToken();
     if(remember){
         localStorage.setItem(authItemName, JSON.stringify(authObj));
     }else {
@@ -39,10 +43,12 @@ function getAccessToken() {
         if(authObj.expire <= Date.now()) {
             removeAccessToken()
             ElMessage.warning("登录已过期，请重新登录");
+            useUserStore().clearUserInfo()
             return null;
         }
         return authObj.token;
     }else {
+        useUserStore().clearUserInfo()
         return null;
     }
 }
@@ -54,7 +60,7 @@ function removeAccessToken() {
 }
 
 // 判断是否验证
-function unAuth() {
+function isAuth() {
     return !getAccessToken();
 }
 
@@ -82,6 +88,40 @@ function internalGet(url, header, success, failure = defaultFailure, error = def
     }).catch(err => error(err));
 }
 
+function internalPut(url, data, header, success, failure = defaultFailure, error = defaultError) {
+    axios.put(url, data, {
+        headers: header
+    }).then(( {data} ) => {
+        if (data.code === 200){
+            success(data.data);
+        }else {
+            failure(data.message, data.code, url);
+        }
+    }).catch((err) => error(err));
+}
+
+function internalDelete(url, header, success, failure = defaultFailure, error = defaultError) {
+    axios.delete(url, {
+        headers: header
+    }).then(( {data} ) => {
+        if (data.code === 200){
+            success(data.data);
+        }else {
+            failure(data.message, data.code, url);
+        }
+    }).catch((err) => error(err));
+}
+
+// put请求
+function put(url, data, success, failure = defaultFailure){
+    internalPut(url, data, accessHeader(), success, failure);
+}
+
+// delete请求
+function deleteRequest(url, success, failure = defaultFailure){
+    internalDelete(url, accessHeader(), success, failure);
+}
+
 // get请求
 function get(url, success, failure = defaultFailure){
     internalGet(url, accessHeader(), success, failure);
@@ -105,7 +145,8 @@ function login(form, success, failure = defaultFailure){
         "Content-Type": "application/x-www-form-urlencoded"
     },(data) => {
         storeAccessToken(data.token, form.remember, data.expire);
-        ElMessage.success(`登录成功，欢迎${data.username}回来`);
+        // 获取用户信息并存储
+        userInfo();
         success(data);
     }, failure);
 }
@@ -123,4 +164,4 @@ function logout(success, failure = defaultFailure){
     }, failure);
 }
 
-export { logout, login, post, get, unAuth}
+export { logout, login, post, get, isAuth, put, deleteRequest }

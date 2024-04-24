@@ -16,12 +16,17 @@ const router = createRouter({
                 {
                     path: 'test-notice',
                     name: 'testNotice',
-                    component: () => import('@/views/home/TestNoticePage.vue')
+                    component: () => import('@/views/home/noticePage/TestNoticePage.vue')
                 },
                 {
                     path: 'test-instructions',
                     name: 'testInstructions',
-                    component: () => import('@/views/home/TestInstructionsPage.vue')
+                    component: () => import('@/views/home/noticePage/TestInstructionsPage.vue')
+                },
+                {
+                    path: 'user-info',
+                    name: 'userInfo',
+                    component: () => import('@/views/home/UserInfoPage.vue')
                 }
             ]
         },

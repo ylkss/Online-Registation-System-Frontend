@@ -207,3 +207,23 @@ app.use(VMdPreview);
   };
 </script>
 ```
+### pinia
+Pinia 是一个用于 Vue 3 的状态管理库，它是一个 Vue 3 的插件，它提供了一个类似于 Vuex 的 API，但是更加简单和易于使用。
+
+#### 安装
+```shell
+npm install pinia
+```
+
+#### 引入
+```javascript
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
+
+const pinia = createPinia()
+const app = createApp(App)
+
+app.use(pinia)
+app.mount('#app')
+```

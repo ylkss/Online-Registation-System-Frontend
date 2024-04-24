@@ -19,6 +19,7 @@ import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress.js';
 import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
 
 import Prism from 'prismjs';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 VueMarkdownEditor.use(vuepressTheme, {
     Prism,
@@ -26,19 +27,26 @@ VueMarkdownEditor.use(vuepressTheme, {
 // highlight.js
 import highlight from 'highlight.js';
 
+import {createPinia} from "pinia";
+
 VMdPreview.use(githubTheme, {
     Hljs: highlight,
 });
 
 
-axios.defaults.baseURL = 'http://127.0.0.1:8080'
+axios.defaults.baseURL = 'http://127.0.0.1:8081'
+
+const pinia = createPinia()
 
 const app = createApp(App)
+
 
 app.use(ElementPlus)
 app.use(router)
 app.use(VueMarkdownEditor)
 app.use(VMdPreview)
+app.use(pinia)
+pinia.use(piniaPluginPersistedstate)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }

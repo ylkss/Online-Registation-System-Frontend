@@ -11,6 +11,7 @@ const registerForm = reactive({
   phone: '',
   code: ''
 })
+
 // 用户输入规则检查相关
 const validateUsername = (rule, value, callback) => {
   if (value === '') {
