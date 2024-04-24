@@ -164,4 +164,4 @@ function logout(success, failure = defaultFailure){
     }, failure);
 }
 
-export { logout, login, post, get, isAuth, put, deleteRequest }
+export { logout, login, post, get, isAuth, put, deleteRequest, getAccessToken }

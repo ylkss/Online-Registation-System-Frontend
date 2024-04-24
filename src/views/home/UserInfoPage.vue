@@ -1,10 +1,11 @@
 <script setup>
 import {useUserStore} from "@/store/index.js";
 import {computed, reactive, ref} from "vue";
-import {Iphone, Message} from "@element-plus/icons-vue";
+import {Iphone, Message, UploadFilled} from "@element-plus/icons-vue";
 import {askCode} from "@/net/auth/index.js";
 import {update_userInfo, userInfo} from "@/net/user/index.js";
 import {ElMessage} from "element-plus";
+import {getAccessToken} from "@/net/index.js";
 
 const userStore = useUserStore();
 
@@ -167,6 +168,28 @@ const handleEmailChange = () => {
     })
   })
 }
+// 用户头像更新
+const handleAvatarSuccess = (res) => {
+  if(res.code === 200){
+    userStore.user.avatar = res.data
+    ElMessage.success('证件照更新成功')
+  }else {
+    ElMessage.error('证件照更新失败')
+  }
+}
+
+const beforeAvatarUpload = (file) => {
+  const isJPG = file.type === 'image/png' || file.type === 'image/jpg' || file.type === 'image/jpeg';
+  const isLt2M = file.size / 1024 / 1024 < 1;
+  // console.log(file);
+  if (!isJPG) {
+    ElMessage.error('上传头像图片只能是 JPG/JPEG/PNG 格式!');
+  }
+  if (!isLt2M) {
+    ElMessage.error('上传头像图片大小不能超过 1MB!');
+  }
+  return isJPG && isLt2M;
+}
 </script>
 
 <template>
@@ -314,7 +337,38 @@ const handleEmailChange = () => {
               </el-form>
             </el-tabs>
           </div>
-          <div class="user_avatar-form"></div>
+          <div class="user_avatar-form">
+            <div class="upload-box">
+              <div class="upload-box-tips">
+                <el-text>上传证件照：</el-text>
+              </div>
+              <div class="upload-box-content">
+                <el-upload
+                    class="upload-avatar"
+                    drag
+                    action="http://localhost:8081/api/file/uploadAvatar"
+                    multiple
+                    :before-upload="beforeAvatarUpload"
+                    :on-success="handleAvatarSuccess"
+                    :headers="{Authorization: 'Bearer ' + getAccessToken()}"
+                >
+                  <el-icon v-show="!userStore.user.avatar" class="el-icon--upload"><upload-filled /></el-icon>
+                  <img v-show="userStore.user.avatar" :src="userStore.user.avatar" alt="avatar" class="avatar">
+                  <div v-show="!userStore.user.avatar" class="el-upload__text">
+                    Drop file here or <em>click to upload</em>
+                  </div>
+                  <template #tip>
+                    <div class="el-upload__tip">
+                      请上传近期免冠白底2寸照片，尺寸是3.5x5.3厘米，390x567像素，支持JPG/JPEG/PNG，1M以内。
+                    </div>
+                    <div class="el-upload__tip">
+                      注意：该证件照将用于准考证打印，若测试现场不再采集照片也将用于打印普通话证书。
+                    </div>
+                  </template>
+                </el-upload>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </el-card>
@@ -371,9 +425,44 @@ const handleEmailChange = () => {
     }
 
     .user_avatar-form {
-      width: 30%;
+      width: 20%;
       height: 700px;
-      background-color: #79ebff;
+
+      .upload-box{
+        width: 160px;
+        height: 100%;
+        margin-right: 70px;
+        display: flex;
+        flex-direction: column;
+
+        .upload-box-tips{
+          width: 100%;
+          height: 35px;
+          display: flex;
+        }
+
+        .upload-box-content{
+          width: 100%;
+          height: 400px;
+
+          .upload-avatar{
+            width: 160px;
+            height: 240px;
+            position: relative;
+
+            .avatar{
+              width: 158px;
+              height: 190px;
+              object-fit: cover;
+            }
+
+            .el-upload__tip{
+              font-size: 12px;
+              color: #606266;
+            }
+          }
+        }
+      }
     }
   }
 
