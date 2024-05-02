@@ -2,11 +2,17 @@
 import router from "@/router/index.js";
 import NavBar from "@/components/layout/NavBar.vue";
 import {useUserStore} from "@/store/index.js";
-import {isAuth} from "@/net/index.js";
+import {isAuth, logout} from "@/net/index.js";
 
 const logoUrl = 'public/images/logo.ce99f05f.png'
 
 const userInfoStore = useUserStore()
+
+const handleLogout = () => {
+  logout(() => {
+    router.push('/auth/login')
+  })
+}
 </script>
 
 <template>
@@ -22,7 +28,7 @@ const userInfoStore = useUserStore()
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item @click="router.push('/user-info')">个人中心</el-dropdown-item>
-            <el-dropdown-item @click="router.push('/auth/logout')">退出登录</el-dropdown-item>
+            <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>

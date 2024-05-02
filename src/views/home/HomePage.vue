@@ -62,7 +62,7 @@ const provinces = [
         <div class="entrance-main">
           <div class="entrance-main-content">
             <div v-for="province in provinces" :key="province" class="entrance-main-content-provinces-button">
-              <div class="entrance-main-content-provinces-content">{{ province }}</div>
+              <div class="entrance-main-content-provinces-content" @click="router.push({path: '/sign-up', query: {province : province}})">{{ province }}</div>
             </div>
           </div>
         </div>

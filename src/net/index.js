@@ -7,6 +7,11 @@ const authItemName = "access_token";
 
 const defaultFailure = (message, code, url) => {
   console.warn(`Request to ${url} failed with code ${code} and message ${message}`);
+  if(code === 401){
+    ElMessage.warning("登录已过期，请重新登录");
+    useUserStore().clearUserInfo();
+    removeAccessToken();
+  }
   ElMessage.warning(message);
 }
 
@@ -160,6 +165,7 @@ function logout(success, failure = defaultFailure){
     get("/api/auth/logout",() => {
         ElMessage.success("退出登录成功");
         removeAccessToken();
+        useUserStore().clearUserInfo()
         success()
     }, failure);
 }
