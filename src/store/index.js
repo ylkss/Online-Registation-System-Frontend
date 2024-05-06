@@ -17,9 +17,10 @@ export const useUserStore = defineStore('general', {
         }
     },
     getters: {
-        // 是否完成信息填写，若身份证号码为空则未完成
-        isComplete: () => {
-            return this.user.idCardNum !== ''
+        // 是否完成信息填写，存在任何一个字段为空则为未完善信息
+        isComplete: (state) => {
+            return state.user.idCardNum !== '' && state.user.realName !== '' && state.user.avatar !== ''
+                && state.user.email !== '' && state.user.phone !== ''
         },
     },
     actions: {

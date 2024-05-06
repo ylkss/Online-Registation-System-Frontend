@@ -2,6 +2,7 @@ import axios from "axios";
 import {ElMessage} from "element-plus";
 import {userInfo} from "@/net/user/index.js";
 import {useUserStore} from "@/store/index.js";
+import router from "@/router/index.js";
 
 const authItemName = "access_token";
 
@@ -11,6 +12,7 @@ const defaultFailure = (message, code, url) => {
     ElMessage.warning("登录已过期，请重新登录");
     useUserStore().clearUserInfo();
     removeAccessToken();
+    router.push({path: "/auth/login"})
   }
   ElMessage.warning(message);
 }
