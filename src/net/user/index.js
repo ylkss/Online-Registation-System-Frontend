@@ -26,4 +26,8 @@ function userSignUp(testId){
     })
 }
 
-export { userInfo,update_userInfo,userSignUp }
+function userSignUpInfo(success){
+    get('/api/user/registration-info', success)
+}
+
+export { userInfo,update_userInfo,userSignUp,userSignUpInfo }
