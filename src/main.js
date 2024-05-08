@@ -29,6 +29,8 @@ import highlight from 'highlight.js';
 
 import {createPinia} from "pinia";
 
+import print from 'vue3-print-nb'
+
 VMdPreview.use(githubTheme, {
     Hljs: highlight,
 });
@@ -45,6 +47,7 @@ app.use(ElementPlus)
 app.use(router)
 app.use(VueMarkdownEditor)
 app.use(VMdPreview)
+app.use(print)
 app.use(pinia)
 pinia.use(piniaPluginPersistedstate)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

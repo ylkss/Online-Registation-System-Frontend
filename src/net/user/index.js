@@ -1,4 +1,4 @@
-import { put,get,post } from '@/net/index.js';
+import {put, get, post, logout} from '@/net/index.js';
 import {useUserStore} from "@/store/index.js";
 import {ElMessage} from "element-plus";
 import router from "@/router/index.js";
@@ -30,4 +30,13 @@ function userSignUpInfo(success){
     get('/api/user/registration-info', success)
 }
 
-export { userInfo,update_userInfo,userSignUp,userSignUpInfo }
+function userResetPassword(data){
+    post('/api/user/reset-password', data, () => {
+        logout(() => {
+            ElMessage.success("密码重置成功");
+            router.push('/auth/login')
+        })
+    })
+}
+
+export { userInfo,update_userInfo,userSignUp,userSignUpInfo,userResetPassword }

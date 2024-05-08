@@ -37,6 +37,16 @@ const router = createRouter({
                     path: 'registration-info',
                     name: 'registrationInfo',
                     component: () => import('@/views/home/userPage/RegistrationInfoPage.vue')
+                },
+                {
+                    path: 'ticket-print',
+                    name: 'ticketPrint',
+                    component: () => import('@/views/home/userPage/TicketPrintPage.vue')
+                },
+                {
+                    path: 'reset-password',
+                    name: 'resetPassword',
+                    component: () => import('@/views/home/userPage/ResetPasswordPage.vue')
                 }
             ]
         },
