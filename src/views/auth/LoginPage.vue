@@ -48,12 +48,25 @@ const phoneLoginForm = reactive({
 function userLogin() {
   passwordLoginFormRef.value.validate((isValid) => {
     if(isValid) {
-      login(passwordLoginForm, () => router.push({path: '/'}) )
+      login(passwordLoginForm, (data) => {
+        if(data.isAdmin){
+          router.push({path: '/admin'})
+        } else {
+          router.push({path: '/'})
+        }
+      })
     }
   });
   phoneLoginFormRef.value.validate((isValid) => {
     if(isValid) {
-      login(phoneLoginForm, () => router.push({path: '/'}))
+      login(phoneLoginForm, () => {
+        router.push({path: '/'})
+        if(data.isAdmin){
+          router.push({path: '/admin'})
+        } else {
+          router.push({path: '/'})
+        }
+      })
     }
   });
 }
