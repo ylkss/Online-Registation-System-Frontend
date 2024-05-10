@@ -71,6 +71,33 @@ const router = createRouter({
             path: '/admin',
             name: 'admin',
             component: () => import('@/views/admin/AdminView.vue'),
+            children: [
+                {
+                    path: '',
+                    name: 'adminHome',
+                    component: () => import('@/views/admin/TestPage.vue')
+                },
+                {
+                    path: 'testRoom',
+                    name: 'testRoom',
+                    component: () => import('@/views/admin/TestRoomPage.vue')
+                },
+                {
+                    path: 'testNotice',
+                    name: 'testNotice',
+                    component: () => import('@/views/admin/TestNoticePage.vue')
+                },
+                {
+                    path: 'register',
+                    name: 'register',
+                    component: () => import('@/views/admin/RegisterPage.vue')
+                },
+                {
+                    path: 'menu',
+                    name: 'menu',
+                    component: () => import('@/views/admin/MenuPage.vue')
+                }
+            ]
         }
     ]
 })

@@ -1,15 +1,9 @@
 <script setup>
-import {onMounted} from "vue";
-
 const props = defineProps({
   menuList: {
     type: Array,
     default: () => []
   }
-})
-
-onMounted(() => {
-  console.log(props.menuList)
 })
 </script>
 
