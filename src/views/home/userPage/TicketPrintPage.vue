@@ -116,6 +116,7 @@ onMounted(() => {
                 <el-table-column prop="location" label="考试地点"></el-table-column>
                 <el-table-column prop="testTime" label="考试时间"></el-table-column>
                 <el-table-column prop="roomNum" label="考场号"></el-table-column>
+                <el-table-column prop="description" label="考场详细信息"></el-table-column>
                 <el-table-column prop="seatNum" label="座位号"></el-table-column>
               </el-table>
             </div>
