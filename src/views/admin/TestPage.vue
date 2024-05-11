@@ -125,7 +125,6 @@ const handleAddTestSessions = (row) => {
   testAddForm.testTime = ''
 }
 
-
 onMounted(() => {
   const params = {
     pageNum: searchForm.pageNum,
@@ -195,11 +194,10 @@ onMounted(() => {
           </el-table-column>
           <el-table-column prop="registerTime" label="开始报名时间" />
           <el-table-column prop="testTime" label="测试时间" />
-          <el-table-column fixed="right" label="Operations" width="230">
+          <el-table-column fixed="right" label="Operations" width="200">
             <template #default="{ row }">
               <el-button link type="danger" size="small">删除</el-button>
               <el-button link type="primary" size="small">修改</el-button>
-              <el-button link type="primary" size="small">考场管理</el-button>
               <el-button @click="handleAddTestSessions(row)" link type="primary" size="small">增加场次</el-button>
             </template>
           </el-table-column>
@@ -369,4 +367,5 @@ onMounted(() => {
     margin-top: 20px;
   }
 }
+
 </style>

@@ -1,4 +1,6 @@
 <script setup>
+import router from "@/router/index.js";
+
 const props = defineProps({
   menuList: {
     type: Array,
@@ -18,7 +20,7 @@ const props = defineProps({
         <MenuTree :menu-list="item.children"/>
       </el-sub-menu>
       <!--没有子菜单的-->
-      <el-menu-item :index="item.path" v-else>
+      <el-menu-item @click="router.push(item.path)" :index="item.path" v-else>
         <span>{{ item.menuName }}</span>
       </el-menu-item>
     </template>
