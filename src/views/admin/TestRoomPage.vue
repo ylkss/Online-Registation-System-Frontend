@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, reactive, ref, watch} from "vue";
-import {getTestRooms} from "@/net/admin/testRoom/index.js";
+import {addTestRoom, getTestRooms} from "@/net/admin/testRoom/index.js";
 
 const customColors = [
   { color: '#f56c6c', percentage: 100 },
@@ -68,6 +68,33 @@ const handlePageChange = (val) => {
   })
 }
 
+const addTestDialogShow = ref(true)
+const addTestRoomForm = reactive({
+  testId: 1,
+  roomNum: '',
+  maxUserNum: '',
+  description: ''
+})
+
+const handleAddTestRoomDialogShow = (row) => {
+  addTestDialogShow.value = true
+  addTestRoomForm.testId = row.id
+}
+
+const handleAddTestRoom = () => {
+  addTestRoom(addTestRoomForm, () => {
+    // 获取考场信息
+    const params = {
+      pageNum: searchForm.pageNum,
+      pageSize: searchForm.pageSize
+    }
+    getTestRooms(params, (data) => {
+      tableData.rows = data.rows
+      tableData.total = data.total
+    })
+  })
+}
+
 onMounted(() => {
   const params = {
     pageNum: searchForm.pageNum,
@@ -127,7 +154,7 @@ onMounted(() => {
             <template #default="props">
               <div style="padding:0 30px">
                 <div style="width: 100%;display: flex;justify-content: center;color: #b3e19d"><h4>考场信息</h4></div>
-                <el-table :data="props.row.testRoomInfo">
+                <el-table show-summary :data="props.row.testRoomInfo">
                   <el-table-column label="考场号" prop="roomNum" />
                   <el-table-column prop="usedNum" label="使用情况">
                     <template #default="{ row }">
@@ -166,7 +193,7 @@ onMounted(() => {
           <el-table-column prop="testTime" label="测试时间" />
           <el-table-column fixed="right" label="Operations">
             <template #default="{ row }">
-              <el-button link type="primary" size="small">增加考场</el-button>
+              <el-button @click="handleAddTestRoomDialogShow(row)" link type="primary" size="small">增加考场</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -181,6 +208,43 @@ onMounted(() => {
       </div>
     </el-card>
   </div>
+  <el-dialog v-model="addTestDialogShow" title="新增考场">
+    <el-form>
+      <el-row>
+        <el-col :span="3" :offset="4">
+          <el-text>考场号:</el-text>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item>
+            <el-input v-model="addTestRoomForm.roomNum" placeholder="请输入考场号"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="3" :offset="4">
+          <el-text>最大人数:</el-text>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item>
+            <el-input v-model="addTestRoomForm.maxUserNum" placeholder="请输入最大人数"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="3" :offset="4">
+          <el-text>位置描述:</el-text>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item>
+            <el-input v-model="addTestRoomForm.description" placeholder="请输入位置描述"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
+    <div style="display: flex;justify-content: center;margin-top: 20px;margin-bottom: 20px">
+      <el-button @click="handleAddTestRoom" type="primary" style="width: 240px">确认提交</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <style scoped>

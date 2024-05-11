@@ -1,7 +1,6 @@
 <script setup>
 import {logout} from "@/net/index.js";
 import router from "@/router/index.js";
-import {getMenuTree} from "@/net/admin/menu/index.js";
 
 const handleLogout = () => {
   logout(() => {

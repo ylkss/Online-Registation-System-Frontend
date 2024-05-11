@@ -78,23 +78,23 @@ const router = createRouter({
                     component: () => import('@/views/admin/TestPage.vue')
                 },
                 {
-                    path: 'testRoom',
+                    path: '/admin/testRoom',
                     name: 'testRoom',
                     component: () => import('@/views/admin/TestRoomPage.vue')
                 },
                 {
-                    path: 'testNotice',
+                    path: '/admin/testNotice',
                     name: 'testNotice',
                     component: () => import('@/views/admin/TestNoticePage.vue')
                 },
                 {
-                    path: 'register',
+                    path: '/admin/register',
                     name: 'register',
                     component: () => import('@/views/admin/RegisterPage.vue')
                 },
                 {
-                    path: 'menu',
-                    name: 'menu',
+                    path: '/admin/menu',
+                    name: 'menuPage',
                     component: () => import('@/views/admin/MenuPage.vue')
                 }
             ]
