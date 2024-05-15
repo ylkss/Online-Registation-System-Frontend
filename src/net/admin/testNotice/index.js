@@ -6,3 +6,9 @@ function addTestNotice(data){
         ElMessage.success('添加成功')
     })
 }
+
+function getTestNotices(data, success){
+    post(`/api/admin/testNotice/list`, data, success)
+}
+
+export { addTestNotice, getTestNotices }

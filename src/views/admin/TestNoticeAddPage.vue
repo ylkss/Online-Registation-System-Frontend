@@ -1,10 +1,15 @@
 <script setup>
 import {reactive} from "vue";
+import {addTestNotice} from "@/net/admin/testNotice/index.js";
 
 const TestNoticeForm = reactive({
   title: '',
   content: ''
 })
+
+const handleAddTestNotice = () => {
+  addTestNotice(TestNoticeForm)
+}
 </script>
 
 <template>
@@ -27,7 +32,7 @@ const TestNoticeForm = reactive({
             </el-form-item>
           </div>
           <div style="width: 100%;height:50px;display: flex;justify-content: center;margin-top: 20px;margin-bottom: 20px">
-            <el-button style="width: 240px" type="primary">确认发布</el-button>
+            <el-button @click="handleAddTestNotice" style="width: 240px" type="primary">确认发布</el-button>
           </div>
         </div>
       </el-form>
