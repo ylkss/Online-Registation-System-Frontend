@@ -21,6 +21,8 @@ const userInfo = reactive({
   sex: userStore.user.sex,
   avatar: userStore.user.avatar,
   idCardNum: userStore.user.idCardNum,
+  ethnicGroup: userStore.user.ethnicGroup,
+  workingConditions: userStore.user.workingConditions,
 })
 
 const activeItem = ref(1);
@@ -239,6 +241,14 @@ const handleSelectTestTime = (index) => {
                 <el-row class="user-info-item">
                   <el-col class="user-info-item-title" :span="5">电子邮箱：</el-col>
                   <el-col class="user-info-item-content" :span="18">{{ userInfo.email }}</el-col>
+                </el-row>
+                <el-row class="user-info-item">
+                  <el-col class="user-info-item-title" :span="5">民族：</el-col>
+                  <el-col class="user-info-item-content" :span="18">{{ userInfo.ethnicGroup }}</el-col>
+                </el-row>
+                <el-row class="user-info-item">
+                  <el-col class="user-info-item-title" :span="5">工作状态：</el-col>
+                  <el-col class="user-info-item-content" :span="18">{{ userInfo.workingConditions }}</el-col>
                 </el-row>
               </el-card>
               <div class="user-info-button">

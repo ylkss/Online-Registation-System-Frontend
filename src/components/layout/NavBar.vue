@@ -2,6 +2,7 @@
 import {ref} from "vue";
 import router from "@/router/index.js";
 import {useUserStore} from "@/store/index.js";
+import {useRoute} from "vue-router";
 
 const activeTab = ref('home');
 

@@ -42,6 +42,7 @@ onMounted(() => {
         class="el-menu-vertical-demo"
         :default-active="defaultActive"
         text-color="#fff"
+        router
         @open="handleOpen"
         @close="handleClose"
     >

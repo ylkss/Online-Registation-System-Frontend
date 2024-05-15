@@ -20,7 +20,7 @@ const props = defineProps({
         <MenuTree :menu-list="item.children"/>
       </el-sub-menu>
       <!--没有子菜单的-->
-      <el-menu-item @click="router.push({ path: item.path })" :index="item.path" v-else>
+      <el-menu-item v-if="item.menuType === 'C'" :index="item.path">
         <span>{{ item.menuName }}</span>
       </el-menu-item>
     </template>

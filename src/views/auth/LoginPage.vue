@@ -107,7 +107,7 @@ const askCodeHandler = () => {
 <template>
   <el-card class="auth-card" shadow="always">
     <div class="logo">
-      <el-image src="https://element-plus.gitee.io/images/element-plus-logo.svg"/>
+      <el-image src="https://cn.element-plus.org/images/element-plus-logo.svg"/>
     </div>
     <div class="login-form">
       <el-tabs stretch class="login-tabs">

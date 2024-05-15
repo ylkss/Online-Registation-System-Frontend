@@ -6,6 +6,17 @@ const tableInfo = ref([])
 
 const getTableInfo = () => {
   userSignUpInfo((data) => {
+    // 如果status为0：未审核，1：审核通过，2：成绩可查，3：审核未通过
+    const statusBody = ref('')
+    if(data.status === 0){
+      statusBody.value = '未审核'
+    } else if(data.status === 1){
+      statusBody.value = '审核通过'
+    } else if(data.status === 2){
+      statusBody.value = '成绩可查'
+    } else if(data.status === 3){
+      statusBody.value = '审核未通过'
+    }
     tableInfo.value = [
       {
         header: '考生姓名',
@@ -24,8 +35,8 @@ const getTableInfo = () => {
         body: data.registerTime
       },
       {
-        header: '准考证号',
-        body: data.admissionTicketNum
+        header: '报考状态',
+        body: statusBody
       },
       {
         header: '测试日期',

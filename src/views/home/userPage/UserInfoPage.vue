@@ -18,8 +18,31 @@ const userInfoForm = reactive({
   sex: userStore.user.sex,
   avatar: userStore.user.avatar,
   idCardNum: userStore.user.idCardNum,
+  ethnicGroup: userStore.user.ethnicGroup,
+  workingConditions: userStore.user.workingConditions,
   code: ''
 })
+
+// 民族数组
+const ethnicGroups = [
+  "汉族", "壮族", "满族", "回族", "苗族", "维吾尔族", "土家族", "彝族", "蒙古族", "藏族",
+  "布依族", "侗族", "瑶族", "朝鲜族", "白族", "哈尼族", "哈萨克族", "黎族", "傣族", "畲族",
+  "傈僳族", "仡佬族", "东乡族", "高山族", "拉祜族", "水族", "佤族", "纳西族", "羌族", "土族",
+  "仫佬族", "锡伯族", "柯尔克孜族", "达斡尔族", "景颇族", "毛南族", "撒拉族", "布朗族", "塔吉克族", "阿昌族",
+  "普米族", "鄂温克族", "怒族", "京族", "基诺族", "德昂族", "保安族", "俄罗斯族", "裕固族", "乌孜别克族",
+  "门巴族", "鄂伦春族", "独龙族", "塔塔尔族", "赫哲族", "珞巴族"
+];
+
+const newEthnicGroups = ethnicGroups.map(group => ({
+  label: group,
+  value: group
+}));
+
+const workingConditionsGroup = [
+  {label: '在职', value: '在职'},
+  {label: '待业', value: '待业'},
+  {label: '在校学生', value: '在校学生'},
+]
 
 // 表单验证相关
 const validateUsername = (rule, value, callback) => {
@@ -119,7 +142,9 @@ const handleMainUserInfoSubmit = () => {
     update_userInfo({
       realName: userInfoForm.realName,
       sex: userInfoForm.sex,
-      idCardNum: userInfoForm.idCardNum
+      idCardNum: userInfoForm.idCardNum,
+      ethnicGroup: userInfoForm.ethnicGroup,
+      workingConditions: userInfoForm.workingConditions
     }, () => {
       userInfo(() => {
         ElMessage.success('用户主要信息更新成功')
@@ -244,6 +269,46 @@ const beforeAvatarUpload = (file) => {
                       <el-col :span="19">
                         <el-form-item prop="idCardNum">
                           <el-input size="large" v-model="userInfoForm.idCardNum"></el-input>
+                        </el-form-item>
+                      </el-col>
+                      <el-col :span="5">
+                        <el-text style="margin-top: 5px">民族：</el-text>
+                      </el-col>
+                      <el-col :span="19">
+                        <el-form-item prop="ethnicGroup">
+                          <el-select
+                              v-model="userInfoForm.ethnicGroup"
+                              placeholder="Select"
+                              size="large"
+                              style="width: 325px"
+                          >
+                            <el-option
+                                v-for="item in newEthnicGroups"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value"
+                            />
+                          </el-select>
+                        </el-form-item>
+                      </el-col>
+                      <el-col :span="5">
+                        <el-text style="margin-top: 5px">工作状态：</el-text>
+                      </el-col>
+                      <el-col :span="19">
+                        <el-form-item prop="workingConditions">
+                          <el-select
+                              v-model="userInfoForm.workingConditions"
+                              placeholder="Select"
+                              size="large"
+                              style="width: 325px"
+                          >
+                            <el-option
+                                v-for="item in workingConditionsGroup"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value"
+                            />
+                          </el-select>
                         </el-form-item>
                       </el-col>
                     </el-row>

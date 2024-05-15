@@ -68,7 +68,7 @@ const handlePageChange = (val) => {
   })
 }
 
-const addTestDialogShow = ref(true)
+const addTestDialogShow = ref(false)
 const addTestRoomForm = reactive({
   testId: 1,
   roomNum: '',

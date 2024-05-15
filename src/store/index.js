@@ -13,6 +13,8 @@ export const useUserStore = defineStore('general', {
                 avatar: '',
                 email: '',
                 ipSource: '',
+                ethnicGroup: '',
+                workingConditions: '',
             }
         }
     },
@@ -20,7 +22,8 @@ export const useUserStore = defineStore('general', {
         // 是否完成信息填写，存在任何一个字段为空则为未完善信息
         isComplete: (state) => {
             return state.user.idCardNum !== '' && state.user.realName !== '' && state.user.avatar !== ''
-                && state.user.email !== '' && state.user.phone !== ''
+                && state.user.email !== '' && state.user.phone !== '' && state.user.ethnicGroup !== ''
+                && state.user.workingConditions !== '';
         },
     },
     actions: {

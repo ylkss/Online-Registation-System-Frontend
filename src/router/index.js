@@ -78,24 +78,29 @@ const router = createRouter({
                     component: () => import('@/views/admin/TestPage.vue')
                 },
                 {
-                    path: '/admin/testRoom',
+                    path: 'testRoom',
                     name: 'testRoom',
                     component: () => import('@/views/admin/TestRoomPage.vue')
                 },
                 {
-                    path: '/admin/testNotice',
-                    name: 'testNotice',
-                    component: () => import('@/views/admin/TestNoticePage.vue')
+                    path: 'testNotice',
+                    name: 'testNoticeManage',
+                    component: () => import('@/views/admin/TestNoticePage.vue'),
                 },
                 {
-                    path: '/admin/register',
-                    name: 'register',
+                    path: 'register',
+                    name: 'registerManage',
                     component: () => import('@/views/admin/RegisterPage.vue')
                 },
                 {
-                    path: '/admin/menu',
+                    path: 'menu',
                     name: 'menuPage',
                     component: () => import('@/views/admin/MenuPage.vue')
+                },
+                {
+                    path: 'testNotice/add',
+                    name: 'addTestNotice',
+                    component: () => import('@/views/admin/TestNoticeAddPage.vue')
                 }
             ]
         }
