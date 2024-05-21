@@ -2,6 +2,9 @@
 
 import {ArrowRight, ChatDotRound, DArrowRight, DocumentCopy, Printer, User} from "@element-plus/icons-vue";
 import router from "@/router/index.js";
+import {onMounted, reactive, ref} from "vue";
+import {getTestNoticeList} from "@/net/userApi/testNotice/index.js";
+
 
 const provinces = [
   "北京", "天津", "山西", "河北",
@@ -13,6 +16,29 @@ const provinces = [
   "云南", "西藏", "陕西", "甘肃",
   "青海", "宁夏", "新疆", "新疆兵团"
 ];
+
+const searchForm = reactive({
+  pageNum: 1,
+  pageSize: 6
+})
+
+const tableData = reactive({
+  rows: [],
+  total: 0
+})
+const showTestNotice = ref(false)
+
+const handleGetTestNotice = () => {
+  getTestNoticeList(searchForm, (data) => {
+    tableData.rows = data.rows
+    tableData.total = data.total
+    showTestNotice.value = true
+  })
+}
+
+onMounted(() => {
+  handleGetTestNotice()
+})
 </script>
 
 <template>
@@ -27,25 +53,25 @@ const provinces = [
                 测试计划
               </div>
               <div class="test-notice-more">
-                <div>
+                <div class="hover-cursor" @click="router.push('/test-notice-more')">
                   更多 <el-icon><DArrowRight /></el-icon>
                 </div>
               </div>
             </div>
           </el-header>
           <el-main>
-            <div class="test-notice-main">
-              <div v-for="n in 6"  :key="n" class="test-notice-content">
+            <div class="test-notice-main" v-show="showTestNotice">
+              <div v-for="item in tableData.rows"  :key="item.id" class="test-notice-content">
                 <div class="test-notice-content-text">
                   <el-link
-                      @click="router.push({ path:'/test-notice', query: { id: n } })"
+                      @click="router.push({ path:'/test-notice', query: { id: item.id } })"
                       :icon="ArrowRight"
                       :underline="false">
-                    黎明职业大学普通话水平测试站5月份测试计划
+                    {{ item.title }}
                   </el-link>
                 </div>
                 <div class="test-notice-content-time">
-                  <el-text type="info" size="large">2024-02-25</el-text>
+                  <el-text type="info" size="large">{{ item.formattedCreateTime }}</el-text>
                 </div>
               </div>
             </div>
@@ -132,6 +158,9 @@ const provinces = [
 </template>
 
 <style scoped>
+.hover-cursor:hover {
+  cursor: pointer;
+}
 .el-link:hover{
   background-color: transparent;
 }

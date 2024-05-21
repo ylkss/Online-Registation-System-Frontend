@@ -1,9 +1,32 @@
 <script setup>
 
 import {Collection, Tickets} from "@element-plus/icons-vue";
-import {ref} from "vue";
+import {reactive, ref} from "vue";
+import {useRoute} from "vue-router";
+import {getTestStationList} from "@/net/userApi/test/index.js";
+import {getAdminTestList} from "@/net/admin/test/index.js";
+
+const provinces = [
+  "北京", "天津", "山西", "河北",
+  "内蒙古", "辽宁", "吉林", "黑龙江",
+  "上海", "江苏", "浙江", "安徽",
+  "福建", "江西", "山东", "河南",
+  "湖北", "湖南", "广东", "广西",
+  "海南", "重庆", "四川", "贵州",
+  "云南", "西藏", "陕西", "甘肃",
+  "青海", "宁夏", "新疆", "新疆兵团"
+];
+
+const options = provinces.map(province => ({
+  value: province,
+  label: province
+}));
+
+const route = useRoute();
+const id = route.query.activeItem;
 
 const activeItem = ref(0);
+activeItem.value = id ? parseInt(id) : 0;
 
 const isActive = (itemId) => {
   if(itemId === 1){
@@ -12,14 +35,21 @@ const isActive = (itemId) => {
   if(itemId === 2){
     return activeItem.value === 1 ? '-active' : '';
   }
+  if(itemId === 3){
+    return activeItem.value === 2 ? '-active' : '';
+  }
 };
 
-const handleActive = () => {
-  if (activeItem.value === 0) {
-    activeItem.value = 1;
-  } else {
-    activeItem.value = 0;
-  }
+const handleActive1 = () => {
+  activeItem.value = 0;
+}
+
+const handleActive2 = () => {
+  activeItem.value = 1;
+}
+
+const handleActive3 = () => {
+  activeItem.value = 2;
 }
 
 // 测试内容
@@ -168,6 +198,39 @@ const testContent = `# 测试内容
 
 缺时1分钟以上，扣4分、5分、6分；说话不满30秒（含30秒），计0分。
 `;
+
+const searchForm = reactive({
+  province: '',
+  pageSize: 10,
+  pageNum: 1
+});
+
+const tableData = reactive({
+  rows: [],
+  total: 0
+})
+const showTable = ref(false)
+
+const handleSearch = () => {
+  // 清空分页
+  searchForm.pageNum = 1
+  getTestStationList(searchForm, (data) => {
+    tableData.rows = data.rows
+    tableData.total = data.total
+    showTable.value = true
+  })
+}
+
+const handlePageChange = (val) => {
+  searchForm.pageNum = val
+  if(val===null){
+    return
+  }
+  getAdminTestList(searchForm, (data) => {
+    tableData.rows = data.rows
+    tableData.total = data.total
+  })
+}
 </script>
 
 <template>
@@ -176,13 +239,17 @@ const testContent = `# 测试内容
       <div class="card-main">
         <div style="border-right: #e6e6e6 solid 1px;">
           <div class="card-nav">
-            <div @click="handleActive" :class="`card-nav-item` + isActive(1)">
+            <div @click="handleActive1" :class="`card-nav-item` + isActive(1)">
               <el-icon style="margin-right: 10px"><Collection /></el-icon>
               <el-link :underline="false">报名流程</el-link>
             </div>
-            <div @click="handleActive" :class="`card-nav-item` + isActive(2)">
+            <div @click="handleActive2" :class="`card-nav-item` + isActive(2)">
               <el-icon style="margin-right: 10px"><Tickets /></el-icon>
               <el-link :underline="false">测试内容</el-link>
+            </div>
+            <div @click="handleActive3" :class="`card-nav-item` + isActive(3)">
+              <el-icon style="margin-right: 10px"><Tickets /></el-icon>
+              <el-link :underline="false">联系测试站</el-link>
             </div>
           </div>
         </div>
@@ -192,6 +259,43 @@ const testContent = `# 测试内容
           </div>
           <div v-show="activeItem === 1">
           <v-md-preview :text="testContent"/>
+          </div>
+          <div v-show="activeItem === 2">
+            <div class="search-item">
+              <el-form :model="searchForm" style="display: flex;margin-top: 12px">
+                <el-form-item>
+                  <el-select
+                      v-model="searchForm.province"
+                      placeholder="选择考试地点"
+                      size="large"
+                      style="width: 240px"
+                  >
+                    <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-button @click="handleSearch" style="height: 40px;margin-left: 20px" type="primary">搜索</el-button>
+              </el-form>
+            </div>
+            <div v-if="showTable" class="data-table">
+              <el-table :data="tableData.rows" stripe style="width: 100%">
+                <el-table-column prop="username" label="测试站名称" width="280" />
+                <el-table-column prop="phone" label="联系电话" width="280" />
+                <el-table-column prop="email" label="电子邮箱" />
+              </el-table>
+              <div class="data-table-pagination">
+                <el-pagination
+                    layout="prev, pager, next"
+                    :page-size="searchForm.pageSize"
+                    :total="tableData.total"
+                    @current-change="handlePageChange"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -260,6 +364,28 @@ const testContent = `# 测试内容
     width: calc(100% - 240px);
     margin-top: 40px;
     padding: 0 20px 20px;
+
+    .search-item{
+      width: 100%;
+      height: 50px;
+      display: flex;
+    }
+
+    .data-table{
+      width: 100%;
+      margin-top: 30px;
+      min-height: 500px;
+      background-color: #f5f7fa;
+      padding: 0 20px;
+      border-bottom: 1px solid #ebeef5;
+      box-shadow: 0 2px 4px 0 rgba(0,0,0,.1);
+
+      .data-table-pagination{
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+    }
   }
 }
 </style>

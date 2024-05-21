@@ -2,8 +2,8 @@
 import {useUserStore} from "@/store/index.js";
 import {computed, reactive, ref} from "vue";
 import {Iphone, Message, UploadFilled} from "@element-plus/icons-vue";
-import {askCode} from "@/net/auth/index.js";
-import {update_userInfo, userInfo} from "@/net/user/index.js";
+import {askCode} from "@/net/userApi/auth/index.js";
+import {update_userInfo, userInfo} from "@/net/userApi/user/index.js";
 import {ElMessage} from "element-plus";
 import {getAccessToken} from "@/net/index.js";
 

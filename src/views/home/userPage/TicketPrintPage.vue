@@ -1,7 +1,7 @@
 <script setup>
 import {useUserStore} from "@/store/index.js";
 import {onMounted, reactive, ref} from "vue";
-import {printTicket} from "@/net/test/index.js";
+import {printTicket} from "@/net/userApi/test/index.js";
 
 const userStore = useUserStore();
 

@@ -3,7 +3,7 @@ import {computed, reactive, ref} from "vue";
 import {EditPen, Lock, Phone, User} from "@element-plus/icons-vue";
 import router from "@/router/index.js";
 import {login} from "@/net/index.js";
-import {askCode} from "@/net/auth/index.js";
+import {askCode} from "@/net/userApi/auth/index.js";
 
 // 密码登录表单
 const passwordLoginFormRef = ref();

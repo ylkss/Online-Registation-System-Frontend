@@ -1,7 +1,7 @@
 <script setup>
 import {computed, reactive, ref} from "vue";
 import {Iphone, Lock, User} from "@element-plus/icons-vue";
-import {askCode, register} from "@/net/auth/index.js";
+import {askCode, register} from "@/net/userApi/auth/index.js";
 
 const registerFormRef = ref();
 const registerForm = reactive({

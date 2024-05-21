@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, ref} from "vue";
-import {userSignUpInfo} from "@/net/user/index.js";
+import {userSignUpInfo} from "@/net/userApi/user/index.js";
 
 const tableInfo = ref([])
 

@@ -1,13 +1,13 @@
 <script setup>
 import {onMounted, reactive, ref} from "vue";
-import {getTestList} from "@/net/test/index.js";
+import {getTestList} from "@/net/userApi/test/index.js";
 import {useRoute} from "vue-router";
 import {Check, DArrowRight, Location, UserFilled} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import {classifyTests, getTestTimeList} from "@/utils/TestListUtil.js";
 import {useUserStore} from "@/store/index.js";
 import router from "@/router/index.js";
-import {userSignUp} from "@/net/user/index.js";
+import {userSignUp} from "@/net/userApi/user/index.js";
 
 const route = useRoute();
 const province = route.query.province

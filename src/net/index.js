@@ -1,6 +1,6 @@
 import axios from "axios";
 import {ElMessage} from "element-plus";
-import {userInfo} from "@/net/user/index.js";
+import {userInfo} from "@/net/userApi/user/index.js";
 import {useUserStore} from "@/store/index.js";
 import router from "@/router/index.js";
 

@@ -2,53 +2,31 @@
 import {useRoute} from "vue-router";
 import {DArrowLeft} from "@element-plus/icons-vue";
 import router from "@/router/index.js";
+import {onMounted, reactive} from "vue";
+import {getTestNoticeInfo} from "@/net/userApi/testNotice/index.js";
 
 const route = useRoute();
 const id = route.query.id;
-const text = `# 测试计划
-dasda
- ## dasda dadad
- # online-register-system
+const testNotice = reactive({
+  id: id,
+  title: '',
+  content: '',
+  createTime: '',
+  formattedCreateTime: ''
+});
 
-This template should help get you started developing with Vue 3 in Vite.
+const handleGetTestNotice = () => {
+  getTestNoticeInfo(testNotice.id, (data) => {
+    testNotice.title = data.title;
+    testNotice.content = data.content;
+    testNotice.createTime = data.createTime;
+    testNotice.formattedCreateTime = data.formattedCreateTime;
+  })
+}
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-\`\`\`sh
-npm install
-\`\`\`
-
-### Compile and Hot-Reload for Development
-
-\`\`\`sh
-npm run dev
-\`\`\`
-
-### Compile and Minify for Production
-
-\`\`\`sh
-npm run build
-\`\`\`
-
-## 项目前端框架依赖
-项目中使用的所有前端框架依赖如下：
-
-### Element-Plus
-Element-Plus 是一套为开发者、设计师和产品经理准备的基于 Vue 3.0 的桌面端组件库。
-
-#### 安装
-\`\`\`shell
-npm install element-plus --save
-\`\`\`
- `
+onMounted(() => {
+  handleGetTestNotice()
+})
 </script>
 
 <template>
@@ -57,12 +35,12 @@ npm install element-plus --save
       <div class="test-notice-title">
         <div @click="router.push('/')" class="title-back"><el-icon size="12"><DArrowLeft /></el-icon>返回</div>
         <div class="title-main">
-          <div class="title-content">测试计划</div>
-          <div class="time">2024-02-12</div>
+          <div class="title-content">{{ testNotice.title }}</div>
+          <div class="time">{{ testNotice.formattedCreateTime }}</div>
         </div>
       </div>
       <div class="test-notice-content">
-        <v-md-preview :text="text"></v-md-preview>
+        <v-md-preview :text="testNotice.content"></v-md-preview>
       </div>
     </el-card>
   </div>
