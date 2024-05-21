@@ -103,13 +103,13 @@ onMounted(() => {
         </div>
       </div>
       <div class="service-main">
-        <div class="service-main-item-4">
+        <div @click="router.push('/registration-info')" class="service-main-item-4">
           <div class="regImg"><el-icon color="#6981a8" size="60"><Search /></el-icon></div>
           <div class="service-main-item-content">
             报名查询
           </div>
         </div>
-        <div class="service-main-item-5">
+        <div @click="router.push('/ticket-print')" class="service-main-item-5">
           <div class="regImg"><el-icon color="#6981a8" size="60"><Printer /></el-icon></div>
           <div class="service-main-item-content">
             准考证打印
@@ -121,7 +121,7 @@ onMounted(() => {
             成绩查询
           </div>
         </div>
-        <div class="service-main-item-5">
+        <div @click="router.push({ path:'/test-instructions', query:{activeItem:2} })" class="service-main-item-5">
           <div class="regImg"><el-icon color="#6981a8" size="60"><User /></el-icon></div>
           <div class="service-main-item-content">
             联系测试站

@@ -49,7 +49,7 @@ const handleTabClick = (tab) => {
         <el-tab-pane label="在线报名" name="signUp"></el-tab-pane>
         <el-tab-pane label="报名查询" name="registrationInfo"></el-tab-pane>
         <el-tab-pane label="准考证打印" name="ticketPrint"></el-tab-pane>
-        <el-tab-pane label="成绩查询" name="scoreInquiry"></el-tab-pane>
+        <el-tab-pane label="成绩查询" name="score"></el-tab-pane>
         <el-tab-pane label="测前须知" name="testInstructions"></el-tab-pane>
       </el-tabs>
     </div>

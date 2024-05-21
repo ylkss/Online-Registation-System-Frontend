@@ -52,6 +52,11 @@ const router = createRouter({
                     path: 'test-notice-more',
                     name: 'testNoticeMore',
                     component: () => import('@/views/home/noticePage/MoreTestNoticePage.vue')
+                },
+                {
+                    path: 'score',
+                    name: 'score',
+                    component: () => import('@/views/home/userPage/ScoreInfoPage.vue')
                 }
             ]
         },

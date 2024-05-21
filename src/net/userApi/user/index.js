@@ -39,4 +39,8 @@ function userResetPassword(data){
     })
 }
 
-export { userInfo,update_userInfo,userSignUp,userSignUpInfo,userResetPassword }
+function getScoreInfo(success){
+    get('/api/user/score', success)
+}
+
+export { userInfo,update_userInfo,userSignUp,userSignUpInfo,userResetPassword,getScoreInfo }
