@@ -2,7 +2,7 @@
 
 import {onMounted, reactive, ref} from "vue";
 import {addTest, getAdminTestList} from "@/net/admin/test/index.js";
-import {getMenuTree} from "@/net/admin/menu/index.js";
+import {getRoleList} from "@/net/admin/role/index.js";
 
 const tableData = reactive({
   rows: [],
@@ -62,7 +62,7 @@ const handleShowAddNewTestDialog = () => {
 }
 
 onMounted(() => {
-  getMenuTree((data) => {
+  getRoleList((data) => {
     tableData.rows = data
     showTable.value = true
   })
@@ -73,13 +73,13 @@ onMounted(() => {
   <div>
     <el-card body-style="padding: 0" style="height: calc(100vh - 65px); width: 100%">
       <div class="header">
-        <el-text type="info">菜单管理</el-text>
+        <el-text type="info">角色管理</el-text>
       </div>
       <div class="interaction-item">
         <div class="search-item">
         </div>
         <div class="add-item">
-          <el-button @click="handleShowAddNewTestDialog" type="primary">新增菜单</el-button>
+          <el-button @click="handleShowAddNewTestDialog" type="primary">新增角色</el-button>
         </div>
       </div>
       <div v-if="showTable" class="data-table">
@@ -89,11 +89,10 @@ onMounted(() => {
             row-key="id"
             default-expand-all
         >
-          <el-table-column prop="menuName" label="菜单名称" width="280" />
-          <el-table-column prop="path" label="路径" width="280" />
-          <el-table-column prop="permission" label="权限" />
-          <el-table-column prop="menuType" label="菜单类型" />
-          <el-table-column prop="orderNum" label="序号" />
+          <el-table-column prop="roleName" label="角色名称" width="280" />
+          <el-table-column prop="userNum" label="角色人数" width="280" />
+          <el-table-column prop="roleDesc" label="角色描述" />
+          <el-table-column prop="createTime" label="创建时间" />
           <el-table-column fixed="right" label="Operations">
             <template #default="{ row }">
               <el-button link type="danger" size="small">删除</el-button>

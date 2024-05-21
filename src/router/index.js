@@ -90,7 +90,12 @@ const router = createRouter({
                 {
                     path: 'register',
                     name: 'registerManage',
-                    component: () => import('@/views/admin/RegisterPage.vue')
+                    component: () => import('@/views/admin/RegisterPage.vue'),
+                },
+                {
+                    path: 'register/list',
+                    name: 'listRegisters',
+                    component: () => import('@/views/admin/RegisterListPage.vue')
                 },
                 {
                     path: 'menu',
@@ -101,6 +106,16 @@ const router = createRouter({
                     path: 'testNotice/add',
                     name: 'addTestNotice',
                     component: () => import('@/views/admin/TestNoticeAddPage.vue')
+                },
+                {
+                    path: 'role',
+                    name: 'rolePage',
+                    component: () => import('@/views/admin/RolePage.vue')
+                },
+                {
+                    path: 'user',
+                    name: 'userPage',
+                    component: () => import('@/views/admin/UserPage.vue')
                 }
             ]
         }

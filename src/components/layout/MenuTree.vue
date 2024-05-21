@@ -1,6 +1,4 @@
 <script setup>
-import router from "@/router/index.js";
-
 const props = defineProps({
   menuList: {
     type: Array,

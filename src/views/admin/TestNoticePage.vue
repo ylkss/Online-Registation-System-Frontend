@@ -1,6 +1,5 @@
 <script setup>
 import {onMounted, reactive, ref} from "vue";
-import {getAdminTestList} from "@/net/admin/test/index.js";
 import {getTestNotices} from "@/net/admin/testNotice/index.js";
 import router from "@/router/index.js";
 
