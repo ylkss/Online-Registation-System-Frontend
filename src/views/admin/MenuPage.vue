@@ -1,8 +1,7 @@
 <script setup>
 
 import {onMounted, reactive, ref} from "vue";
-import {addTest, getAdminTestList} from "@/net/admin/test/index.js";
-import {getMenuTree} from "@/net/admin/menu/index.js";
+import {addMenu, deleteMenu, getMenuTree, updateMenu} from "@/net/admin/menu/index.js";
 
 const tableData = reactive({
   rows: [],
@@ -10,55 +9,78 @@ const tableData = reactive({
 const showTable = ref(false)
 
 const provinces = [
-  "北京", "天津", "山西", "河北",
-  "内蒙古", "辽宁", "吉林", "黑龙江",
-  "上海", "江苏", "浙江", "安徽",
-  "福建", "江西", "山东", "河南",
-  "湖北", "湖南", "广东", "广西",
-  "海南", "重庆", "四川", "贵州",
-  "云南", "西藏", "陕西", "甘肃",
-  "青海", "宁夏", "新疆", "新疆兵团"
+  "C", "M", "B"
 ];
 
 const provincesOptions = provinces.map(province => ({
   value: province,
   label: province
 }));
-const testAddDialogShow = ref(false)
-const NewTest = ref(false)
-const testAddForm = reactive({
-  name: '',
-  location: '',
-  province: '',
-  maxNum: '',
-  notice: '',
-  registerTime: '',
-  testTime: ''
+const menuAddDialogShow = ref(false)
+const menuAddForm = reactive({
+  id: 0,
+  parentId: 0,
+  menuType: '',
+  menuName: '',
+  orderNum: '',
+  permission: '',
+  path: ''
 })
-const handleNewTestRequest = () => {
-  addTest(testAddForm, () => {
-    testAddDialogShow.value = false
-    const params = {
-      pageNum: searchForm.pageNum,
-      pageSize: searchForm.pageSize
-    }
-    getAdminTestList(params, (data) => {
-      tableData.rows = data.rows
-      tableData.total = data.total
+
+const newMenu = ref(false)
+
+const handleNewMenuRequest = () => {
+  addMenu(menuAddForm, () => {
+    getMenuTree((data) => {
+      tableData.rows = data
+      showTable.value = true
     })
+    menuAddDialogShow.value = false
   })
 }
-const handleShowAddNewTestDialog = () => {
+const handleShowAddNewMenuDialog = () => {
   // 清空表单
-  NewTest.value = true
-  testAddForm.name = ''
-  testAddForm.location = ''
-  testAddForm.province = ''
-  testAddForm.maxNum = ''
-  testAddForm.notice = ''
-  testAddForm.registerTime = ''
-  testAddForm.testTime = ''
-  testAddDialogShow.value = true
+  menuAddForm.id = undefined
+  menuAddForm.parentId = 0
+  menuAddForm.menuType = ''
+  menuAddForm.menuName = ''
+  menuAddForm.orderNum = ''
+  menuAddForm.permission = ''
+  menuAddForm.path = ''
+  menuAddDialogShow.value = true
+  newMenu.value = true
+}
+
+const handleShowUpdateNewMenuDialog = (row) => {
+  // 清空表单
+  menuAddForm.id = row.id
+  menuAddForm.parentId = row.parentId
+  menuAddForm.menuType = row.menuType
+  menuAddForm.menuName = row.menuName
+  menuAddForm.orderNum = row.orderNum
+  menuAddForm.permission = row.permission
+  menuAddForm.path = row.path
+  menuAddDialogShow.value = true
+  newMenu.value = false
+}
+
+const handleUpdateMenuRequest = () => {
+  updateMenu(menuAddForm, () => {
+    getMenuTree((data) => {
+      tableData.rows = data
+      showTable.value = true
+    })
+    menuAddDialogShow.value = false
+  })
+}
+
+const handleDeleteMenuRequest = (row) => {
+  deleteMenu(row.id, () => {
+    getMenuTree((data) => {
+      tableData.rows = data
+      showTable.value = true
+    })
+  })
 }
 
 onMounted(() => {
@@ -79,7 +101,7 @@ onMounted(() => {
         <div class="search-item">
         </div>
         <div class="add-item">
-          <el-button @click="handleShowAddNewTestDialog" type="primary">新增菜单</el-button>
+          <el-button @click="handleShowAddNewMenuDialog" type="primary">新增菜单</el-button>
         </div>
       </div>
       <div v-if="showTable" class="data-table">
@@ -89,51 +111,52 @@ onMounted(() => {
             row-key="id"
             default-expand-all
         >
-          <el-table-column prop="menuName" label="菜单名称" width="280" />
-          <el-table-column prop="path" label="路径" width="280" />
+          <el-table-column prop="id" label="菜单id" />
+          <el-table-column prop="menuName" label="菜单名称" />
+          <el-table-column prop="path" label="路径" />
           <el-table-column prop="permission" label="权限" />
           <el-table-column prop="menuType" label="菜单类型" />
           <el-table-column prop="orderNum" label="序号" />
           <el-table-column fixed="right" label="Operations">
             <template #default="{ row }">
-              <el-button link type="danger" size="small">删除</el-button>
-              <el-button link type="primary" size="small">修改</el-button>
+              <el-button @click="handleDeleteMenuRequest(row)" link type="danger" size="small">删除</el-button>
+              <el-button @click="handleShowUpdateNewMenuDialog(row)" link type="primary" size="small">修改</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </el-card>
   </div>
-  <el-dialog v-model="testAddDialogShow" title="新增测试">
+  <el-dialog v-model="menuAddDialogShow" title="新增菜单">
     <el-form>
       <el-row>
         <el-col :span="3" :offset="4">
-          <el-text>测试站名称:</el-text>
+          <el-text>菜单名称:</el-text>
         </el-col>
         <el-col :span="12">
           <el-form-item>
-            <el-input v-model="testAddForm.name" placeholder="请输入测试站名称"></el-input>
+            <el-input v-model="menuAddForm.menuName" placeholder="请输入菜单名称"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="3" :offset="4">
-          <el-text>测试地点:</el-text>
+          <el-text>父菜单id:</el-text>
         </el-col>
         <el-col :span="12">
           <el-form-item>
-            <el-input v-model="testAddForm.location" placeholder="请输入测试地点"></el-input>
+            <el-input v-model="menuAddForm.parentId" placeholder="父菜单id"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="3" :offset="4">
-          <el-text>考试省份:</el-text>
+          <el-text>菜单类别:</el-text>
         </el-col>
         <el-col :span="3">
           <el-form-item>
             <el-select
-                v-model="testAddForm.province"
+                v-model="menuAddForm.menuType"
                 placeholder="Select"
                 size="large"
                 style="width: 240px"
@@ -148,60 +171,36 @@ onMounted(() => {
           </el-form-item>
         </el-col>
         <el-col :span="3" :offset="1">
-          <el-text>最大考试人数:</el-text>
+          <el-text>菜单页面路径:</el-text>
         </el-col>
         <el-col :span="3">
           <el-form-item>
-            <el-input v-model="testAddForm.maxNum"></el-input>
+            <el-input v-model="menuAddForm.path"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="3" :offset="4">
-          <el-text>开始报名时间:</el-text>
+          <el-text>菜单对应权限:</el-text>
         </el-col>
         <el-col :span="12">
           <el-form-item>
-            <el-date-picker
-                v-model="testAddForm.registerTime"
-                type="datetime"
-                placeholder="选择开始报名时间"
-                style="width: 100%"
-            />
+            <el-input v-model="menuAddForm.permission"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="3" :offset="4">
-          <el-text>测试时间:</el-text>
+          <el-text>菜单排序:</el-text>
         </el-col>
         <el-col :span="12">
-          <el-form-item>
-            <el-date-picker
-                v-model="testAddForm.testTime"
-                type="datetime"
-                placeholder="选择测试时间"
-                style="width: 100%"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3" :offset="4">
-          <el-text>注意事项:</el-text>
-        </el-col>
-        <el-col :span="12">
-          <el-input
-              v-model="testAddForm.notice"
-              :autosize="{ minRows: 3 }"
-              type="textarea"
-              placeholder="Please input"
-          />
+          <el-input v-model="menuAddForm.orderNum"></el-input>
         </el-col>
       </el-row>
     </el-form>
     <div style="display: flex;justify-content: center;align-items: center;margin-top: 20px;margin-bottom: 20px">
-      <el-button @click="handleNewTestRequest" type="primary">确认新建测试</el-button>
+      <el-button v-show="newMenu" @click="handleNewMenuRequest" type="primary">确认新建菜单</el-button>
+      <el-button v-show="!newMenu" @click="handleUpdateMenuRequest" type="primary">确认修改菜单</el-button>
     </div>
   </el-dialog>
 </template>

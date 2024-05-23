@@ -1,7 +1,19 @@
-import {put, get, post, logout} from '@/net/index.js';
+import {put, get, post, deleteRequest} from '@/net/index.js';
 
 function getMenuTree(success){
     get('/api/admin/menu/list', success)
 }
 
-export { getMenuTree }
+function addMenu(data, success){
+    post('/api/admin/menu/add', data, success)
+}
+
+function updateMenu(data, success){
+    put('/api/admin/menu/update', data, success)
+}
+
+function deleteMenu(id, success){
+    deleteRequest(`/api/admin/menu/delete?id=${id}`, success)
+}
+
+export { getMenuTree, addMenu, updateMenu, deleteMenu }
