@@ -1,64 +1,97 @@
 <script setup>
 
 import {onMounted, reactive, ref} from "vue";
-import {addTest, getAdminTestList} from "@/net/admin/test/index.js";
-import {getRoleList} from "@/net/admin/role/index.js";
+import {addRole, deleteRole, getRoleList, updateRole, updateRoleMenu} from "@/net/admin/role/index.js";
+import {getMenuTree, getRoleMenuTree} from "@/net/admin/menu/index.js";
 
 const tableData = reactive({
   rows: [],
 })
 const showTable = ref(false)
 
-const provinces = [
-  "北京", "天津", "山西", "河北",
-  "内蒙古", "辽宁", "吉林", "黑龙江",
-  "上海", "江苏", "浙江", "安徽",
-  "福建", "江西", "山东", "河南",
-  "湖北", "湖南", "广东", "广西",
-  "海南", "重庆", "四川", "贵州",
-  "云南", "西藏", "陕西", "甘肃",
-  "青海", "宁夏", "新疆", "新疆兵团"
-];
+const roleMenuDialogShow = ref(false)
 
-const provincesOptions = provinces.map(province => ({
-  value: province,
-  label: province
-}));
-const testAddDialogShow = ref(false)
-const NewTest = ref(false)
-const testAddForm = reactive({
-  name: '',
-  location: '',
-  province: '',
-  maxNum: '',
-  notice: '',
-  registerTime: '',
-  testTime: ''
+const roleAddDialogShow = ref(false)
+const NewRole = ref(false)
+const roleAddForm = reactive({
+  id: 0,
+  roleName: '',
+  roleDesc: ''
 })
-const handleNewTestRequest = () => {
-  addTest(testAddForm, () => {
-    testAddDialogShow.value = false
-    const params = {
-      pageNum: searchForm.pageNum,
-      pageSize: searchForm.pageSize
-    }
-    getAdminTestList(params, (data) => {
-      tableData.rows = data.rows
-      tableData.total = data.total
+const handleNewRoleRequest = () => {
+  addRole(roleAddForm, () => {
+    roleAddDialogShow.value = false
+    getRoleList((data) => {
+      tableData.rows = data
+      showTable.value = true
     })
   })
 }
-const handleShowAddNewTestDialog = () => {
+const handleShowAddNewRoleDialog = () => {
   // 清空表单
-  NewTest.value = true
-  testAddForm.name = ''
-  testAddForm.location = ''
-  testAddForm.province = ''
-  testAddForm.maxNum = ''
-  testAddForm.notice = ''
-  testAddForm.registerTime = ''
-  testAddForm.testTime = ''
-  testAddDialogShow.value = true
+  NewRole.value = true
+  roleAddForm.id = undefined
+  roleAddForm.roleName = ''
+  roleAddForm.roleDesc = ''
+  roleAddDialogShow.value = true
+}
+
+const handleShowUpdateNewRoleDialog = (row) => {
+  // 清空表单
+  NewRole.value = false
+  roleAddForm.id = row.id
+  roleAddForm.roleName = row.roleName
+  roleAddForm.roleDesc = row.roleDesc
+  roleAddDialogShow.value = true
+}
+
+const handleUpdateRoleRequest = () => {
+  updateRole(roleAddForm, () => {
+    roleAddDialogShow.value = false
+    getRoleList((data) => {
+      tableData.rows = data
+      showTable.value = true
+    })
+  })
+}
+
+const tree = ref()
+const MenuTree = ref([])
+const RoleMenuTree = ref([])
+const defaultCheckedKeys = ref([])
+const handleRoleMenuDialogShow = (row) => {
+  roleMenuDialogShow.value = true
+  updateRoleMenuForm.roleId = row.id
+  // 获取总体菜单
+  getMenuTree((data) => {
+    MenuTree.value = data
+    // 获取角色的菜单
+    getRoleMenuTree(row.id, (data) => {
+      RoleMenuTree.value = data
+      tree.value.setCheckedKeys = RoleMenuTree.value.map(item => item.id)
+    })
+  })
+}
+
+const handleDeleteRoleRequest = (row) => {
+  deleteRole(row.id, () => {
+    getRoleList((data) => {
+      tableData.rows = data
+      showTable.value = true
+    })
+  })
+}
+
+const updateRoleMenuForm = reactive({
+  roleId: 0,
+  menuIds: []
+})
+
+const handleUpdateRoleMenuRequest = () => {
+  const checkedKeys = tree.value.getCheckedKeys()
+  updateRoleMenuForm.menuIds = checkedKeys
+  console.log(updateRoleMenuForm)
+  updateRoleMenu(updateRoleMenuForm)
 }
 
 onMounted(() => {
@@ -79,7 +112,7 @@ onMounted(() => {
         <div class="search-item">
         </div>
         <div class="add-item">
-          <el-button @click="handleShowAddNewTestDialog" type="primary">新增角色</el-button>
+          <el-button @click="handleShowAddNewRoleDialog" type="primary">新增角色</el-button>
         </div>
       </div>
       <div v-if="showTable" class="data-table">
@@ -95,112 +128,56 @@ onMounted(() => {
           <el-table-column prop="createTime" label="创建时间" />
           <el-table-column fixed="right" label="Operations">
             <template #default="{ row }">
-              <el-button link type="danger" size="small">删除</el-button>
-              <el-button link type="primary" size="small">修改</el-button>
+              <el-button @click="handleShowUpdateNewRoleDialog(row)" link type="primary" size="small">修改</el-button>
+              <el-button @click="handleRoleMenuDialogShow(row)" link type="primary" size="small">修改角色菜单</el-button>
+              <el-button @click="handleDeleteRoleRequest(row)" link type="danger" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </el-card>
   </div>
-  <el-dialog v-model="testAddDialogShow" title="新增测试">
+  <el-dialog v-model="roleAddDialogShow" title="新增菜单">
     <el-form>
       <el-row>
         <el-col :span="3" :offset="4">
-          <el-text>测试站名称:</el-text>
+          <el-text>角色名称:</el-text>
         </el-col>
         <el-col :span="12">
           <el-form-item>
-            <el-input v-model="testAddForm.name" placeholder="请输入测试站名称"></el-input>
+            <el-input v-model="roleAddForm.roleName" placeholder="请输入菜单名称"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="3" :offset="4">
-          <el-text>测试地点:</el-text>
+          <el-text>角色描述:</el-text>
         </el-col>
         <el-col :span="12">
-          <el-form-item>
-            <el-input v-model="testAddForm.location" placeholder="请输入测试地点"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3" :offset="4">
-          <el-text>考试省份:</el-text>
-        </el-col>
-        <el-col :span="3">
-          <el-form-item>
-            <el-select
-                v-model="testAddForm.province"
-                placeholder="Select"
-                size="large"
-                style="width: 240px"
-            >
-              <el-option
-                  v-for="item in provincesOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="3" :offset="1">
-          <el-text>最大考试人数:</el-text>
-        </el-col>
-        <el-col :span="3">
-          <el-form-item>
-            <el-input v-model="testAddForm.maxNum"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3" :offset="4">
-          <el-text>开始报名时间:</el-text>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item>
-            <el-date-picker
-                v-model="testAddForm.registerTime"
-                type="datetime"
-                placeholder="选择开始报名时间"
-                style="width: 100%"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3" :offset="4">
-          <el-text>测试时间:</el-text>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item>
-            <el-date-picker
-                v-model="testAddForm.testTime"
-                type="datetime"
-                placeholder="选择测试时间"
-                style="width: 100%"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="3" :offset="4">
-          <el-text>注意事项:</el-text>
-        </el-col>
-        <el-col :span="12">
-          <el-input
-              v-model="testAddForm.notice"
-              :autosize="{ minRows: 3 }"
-              type="textarea"
-              placeholder="Please input"
-          />
+          <el-input v-model="roleAddForm.roleDesc"></el-input>
         </el-col>
       </el-row>
     </el-form>
     <div style="display: flex;justify-content: center;align-items: center;margin-top: 20px;margin-bottom: 20px">
-      <el-button @click="handleNewTestRequest" type="primary">确认新建测试</el-button>
+      <el-button v-show="NewRole" @click="handleNewRoleRequest" type="primary">确认新建角色</el-button>
+      <el-button v-show="!NewRole" @click="handleUpdateRoleRequest" type="primary">确认修改角色</el-button>
+    </div>
+  </el-dialog>
+  <el-dialog v-model="roleMenuDialogShow" title="修改角色对应菜单">
+    <el-tree-v2
+        ref="tree"
+        style="max-width: 600px"
+        :data="MenuTree"
+        node-key="id"
+        :props="{
+          label: 'menuName'
+        }"
+        :default-checked-keys="defaultCheckedKeys"
+        show-checkbox
+        :height="208"
+    />
+    <div style="display: flex;justify-content: center;align-items: center;margin-top: 20px;margin-bottom: 20px">
+      <el-button @click="handleUpdateRoleMenuRequest" type="primary">确认修改角色</el-button>
     </div>
   </el-dialog>
 </template>
