@@ -2,10 +2,16 @@
 
 import {onMounted, reactive, ref} from "vue";
 import {useRoute} from "vue-router";
-import {getRegisterList, getRegisterListExcel} from "@/net/admin/register/index.js";
+import {getRegisterList, getRegisterListExcel, updateRegisterStatus} from "@/net/admin/register/index.js";
 
 const route = useRoute();
 const testId = route.query.testId;
+
+const updateForm = reactive({
+  id: 0,
+  status: 0,
+  score: 0
+})
 
 const searchForm = reactive({
   pageNum: 1,
@@ -67,6 +73,50 @@ const statusText = (status) => {
 
 const handleGetRegisterListExcel = () => {
   getRegisterListExcel(testId)
+}
+
+const handlePass = (row) => {
+  // 通过审核
+  updateForm.id = row.id
+  updateForm.status = 1
+  updateForm.score = undefined
+
+  updateRegisterStatus(updateForm, () => {
+    getRegisterList(searchForm, (data) => {
+      tableData.rows = data.rows
+      tableData.total = data.total
+      showTable.value = true
+    })
+  })
+}
+
+const handleFail = (row) => {
+  // 未通过审核
+  updateForm.id = row.id
+  updateForm.status = 3
+  updateForm.score = undefined
+
+  updateRegisterStatus(updateForm, () => {
+    getRegisterList(searchForm, (data) => {
+      tableData.rows = data.rows
+      tableData.total = data.total
+      showTable.value = true
+    })
+  })
+}
+
+const handleSetScore = (row) => {
+  // 上传分数
+  updateForm.id = row.id
+  updateForm.status = undefined
+
+  updateRegisterStatus(updateForm, () => {
+    getRegisterList(searchForm, (data) => {
+      tableData.rows = data.rows
+      tableData.total = data.total
+      showTable.value = true
+    })
+  })
 }
 
 onMounted(() => {
@@ -134,9 +184,16 @@ onMounted(() => {
           </el-table-column>
           <el-table-column fixed="right" label="Operations" width="250">
             <template #default="{ row }">
-              <el-button link type="danger" size="small">审核不通过</el-button>
-              <el-button link type="primary" size="small">审核通过</el-button>
-              <el-button link type="primary" size="small">上传分数</el-button>
+              <el-button link @click="handleFail(row)" type="danger" size="small">审核不通过</el-button>
+              <el-button link @click="handlePass(row)" type="primary" size="small">审核通过</el-button>
+              <el-popover placement="top" :width="200" trigger="click">
+                <template #reference>
+                  <el-button link type="primary" size="small">上传分数</el-button>
+                </template>
+                <el-input v-model="updateForm.score" placeholder="请输入分数" style="width: 100px"></el-input>
+                <el-button @click="handleSetScore(row)" type="primary" size="small">确定</el-button>
+              </el-popover>
+
             </template>
           </el-table-column>
         </el-table>

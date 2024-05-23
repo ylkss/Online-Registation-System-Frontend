@@ -6,6 +6,13 @@ function getRegisterList ( data,success){
     post('/api/admin/userTest/listRegisters', data, success)
 }
 
+function updateRegisterStatus(data, success){
+    put('/api/admin/userTest/updateRegister', data, () => {
+        ElMessage.success('更新成功')
+        success()
+    })
+}
+
 function getRegisterListExcel (testId){
     // window.open(`http://localhost:8081/api/admin/userTest/listRegistersExcel?testId=${testId}`)
     axios.get(`http://localhost:8081/api/admin/userTest/listRegistersExcel?testId=${testId}`,
@@ -38,4 +45,4 @@ function getRegisterListExcel (testId){
     })
 }
 
-export { getRegisterList,getRegisterListExcel }
+export { getRegisterList,getRegisterListExcel,updateRegisterStatus }
