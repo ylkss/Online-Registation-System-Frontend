@@ -12,4 +12,5 @@ function getTestStationList(data, success){
     post('/api/user/test-station', data, success)
 }
 
+
 export { getTestList,printTicket,getTestStationList }

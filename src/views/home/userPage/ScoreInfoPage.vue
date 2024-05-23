@@ -1,11 +1,11 @@
 <script setup>
 import {onMounted, ref} from "vue";
-import {userSignUpInfo} from "@/net/userApi/user/index.js";
+import {getScoreInfo} from "@/net/userApi/user/index.js";
 
 const tableInfo = ref([])
 
 const getTableInfo = () => {
-  userSignUpInfo((data) => {
+  getScoreInfo((data) => {
     tableInfo.value = [
       {
         header: '考生姓名',

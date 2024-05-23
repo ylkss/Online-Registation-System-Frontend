@@ -115,7 +115,7 @@ onMounted(() => {
             准考证打印
           </div>
         </div>
-        <div class="service-main-item-4">
+        <div @click="router.push('/score')" class="service-main-item-4">
           <div class="regImg"><el-icon color="#6981a8" size="60"><DocumentCopy /></el-icon></div>
           <div class="service-main-item-content">
             成绩查询
@@ -127,12 +127,20 @@ onMounted(() => {
             联系测试站
           </div>
         </div>
-        <div class="service-main-item-4">
-          <div class="regImg"><el-icon color="#6981a8" size="60"><ChatDotRound /></el-icon></div>
-          <div class="service-main-item-content">
-            在线咨询
-          </div>
-        </div>
+        <el-popover
+            placement="top-start"
+            trigger="click"
+        >
+          <template #reference>
+            <div class="service-main-item-4">
+              <div class="regImg"><el-icon color="#6981a8" size="60"><ChatDotRound /></el-icon></div>
+              <div class="service-main-item-content">
+                在线咨询
+              </div>
+            </div>
+          </template>
+          <el-image src="src/assets/1.png" fit="cover" style="width: 100px; height: 100px" />
+        </el-popover>
       </div>
     </div>
 

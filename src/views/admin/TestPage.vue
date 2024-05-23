@@ -1,7 +1,7 @@
 <script setup>
 
 import {onMounted, reactive, ref} from "vue";
-import {addTest, getAdminTestList} from "@/net/admin/test/index.js";
+import {addTest, deleteTest, getAdminTestList, updateTestInfo} from "@/net/admin/test/index.js";
 
 const options = [
   {
@@ -80,6 +80,7 @@ const provincesOptions = provinces.map(province => ({
 const testAddDialogShow = ref(false)
 const NewTest = ref(false)
 const testAddForm = reactive({
+  id:0,
   name: '',
   location: '',
   province: '',
@@ -114,8 +115,13 @@ const handleShowAddNewTestDialog = () => {
   testAddDialogShow.value = true
 }
 const handleAddTestSessions = (row) => {
+  // 清空表单
+  testAddForm.registerTime = ''
+  testAddForm.testTime = ''
+
   testAddDialogShow.value = true
   NewTest.value = false
+  testAddForm.id = undefined
   testAddForm.name = row.name
   testAddForm.location = row.location
   testAddForm.province = row.province
@@ -123,6 +129,47 @@ const handleAddTestSessions = (row) => {
   testAddForm.notice = row.notice
   testAddForm.registerTime = ''
   testAddForm.testTime = ''
+}
+const updateTest = ref(true)
+const handleUpdateTest = (row) => {
+  // 清空表单
+  testAddForm.registerTime = ''
+  testAddForm.testTime = ''
+
+  testAddDialogShow.value = true
+  updateTest.value = true
+  NewTest.value = false
+  testAddForm.id = row.id
+  testAddForm.name = row.name
+  testAddForm.location = row.location
+  testAddForm.province = row.province
+  testAddForm.maxNum = row.maxNum
+  testAddForm.notice = row.notice
+}
+const handleUpdateTestRequest = () => {
+  updateTestInfo(testAddForm, () => {
+    testAddDialogShow.value = false
+    const params = {
+      pageNum: searchForm.pageNum,
+      pageSize: searchForm.pageSize
+    }
+    getAdminTestList(params, (data) => {
+      tableData.rows = data.rows
+      tableData.total = data.total
+    })
+  })
+}
+const handleDeleteTest = (row) => {
+  deleteTest(row.id, () => {
+    const params = {
+      pageNum: searchForm.pageNum,
+      pageSize: searchForm.pageSize
+    }
+    getAdminTestList(params, (data) => {
+      tableData.rows = data.rows
+      tableData.total = data.total
+    })
+  })
 }
 
 onMounted(() => {
@@ -196,8 +243,8 @@ onMounted(() => {
           <el-table-column prop="testTime" label="测试时间" />
           <el-table-column fixed="right" label="Operations" width="200">
             <template #default="{ row }">
-              <el-button link type="danger" size="small">删除</el-button>
-              <el-button link type="primary" size="small">修改</el-button>
+              <el-button link @click="handleDeleteTest(row)" type="danger" size="small">删除</el-button>
+              <el-button link @click="handleUpdateTest(row)" type="primary" size="small">修改</el-button>
               <el-button @click="handleAddTestSessions(row)" link type="primary" size="small">增加场次</el-button>
             </template>
           </el-table-column>
@@ -309,8 +356,11 @@ onMounted(() => {
         </el-col>
       </el-row>
     </el-form>
-    <div style="display: flex;justify-content: center;align-items: center;margin-top: 20px;margin-bottom: 20px">
+    <div v-show="!updateTest" style="display: flex;justify-content: center;align-items: center;margin-top: 20px;margin-bottom: 20px">
       <el-button @click="handleNewTestRequest" type="primary">确认新建测试</el-button>
+    </div>
+    <div v-show="updateTest" style="display: flex;justify-content: center;align-items: center;margin-top: 20px;margin-bottom: 20px">
+      <el-button @click="handleUpdateTestRequest" type="primary">确认更新测试</el-button>
     </div>
   </el-dialog>
 </template>
