@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, reactive, ref} from "vue";
-import {getTestNotices} from "@/net/admin/testNotice/index.js";
+import {deleteTestNotice, getTestNotices} from "@/net/admin/testNotice/index.js";
 import router from "@/router/index.js";
 
 const options = [
@@ -62,6 +62,19 @@ const handleAddNewTestNotice = () => {
   router.push({path: '/admin/testNotice/add'})
 }
 
+const handleDeleteTestNotice = (row) => {
+  deleteTestNotice(row.id, () => {
+    const params = {
+      pageNum: searchForm.pageNum,
+      pageSize: searchForm.pageSize
+    }
+    getTestNotices(params, (data) => {
+      tableData.rows = data.rows
+      tableData.total = data.total
+    })
+  })
+}
+
 onMounted(() => {
   const params = {
     pageNum: searchForm.pageNum,
@@ -120,10 +133,17 @@ onMounted(() => {
           <el-table-column prop="id" label="测试通知id" width="280" />
           <el-table-column prop="title" label="测试通知标题" width="280" />
           <el-table-column prop="createTime" label="创建时间" />
+          <el-table-column prop="isDelete" label="是否删除">
+            <template #default="{ row }">
+              <span :style="{ color: row.isDelete === 0 ? '#79bbff' : '#F56C6C' }">
+                {{ row.isDelete === 1 ? '已删除' : '未删除' }}
+              </span>
+            </template>
+          </el-table-column>
           <el-table-column fixed="right" label="Operations" width="200">
             <template #default="{ row }">
-              <el-button link type="danger" size="small">删除</el-button>
-              <el-button link type="primary" size="small">修改</el-button>
+              <el-button link @click="handleDeleteTestNotice(row)" type="danger" size="small">删除</el-button>
+              <el-button @click="router.push({path: '/admin/testNotice/add', query: { id: row.id }})" link type="primary" size="small">修改</el-button>
             </template>
           </el-table-column>
         </el-table>

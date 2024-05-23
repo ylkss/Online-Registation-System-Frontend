@@ -1,14 +1,32 @@
 <script setup>
 import {reactive} from "vue";
-import {addTestNotice} from "@/net/admin/testNotice/index.js";
+import {addTestNotice, updateTestNotice} from "@/net/admin/testNotice/index.js";
+import {useRoute} from "vue-router";
+import {getTestNoticeInfo} from "@/net/userApi/testNotice/index.js";
+const route = useRoute();
+const id = route.query.id;
 
 const TestNoticeForm = reactive({
+  id: id,
   title: '',
   content: ''
 })
 
+// 如果id存在，说明是编辑页面
+if (id) {
+  // 获取测试公告详情
+  getTestNoticeInfo(id, (data) => {
+    TestNoticeForm.title = data.title;
+    TestNoticeForm.content = data.content;
+  })
+}
+
 const handleAddTestNotice = () => {
-  addTestNotice(TestNoticeForm)
+  if(id){
+    updateTestNotice(TestNoticeForm)
+  }else {
+    addTestNotice(TestNoticeForm)
+  }
 }
 </script>
 
