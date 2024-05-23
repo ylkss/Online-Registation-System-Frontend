@@ -3,6 +3,7 @@
 import {onMounted, reactive, ref} from "vue";
 import {useRoute} from "vue-router";
 import {getRegisterList, getRegisterListExcel, updateRegisterStatus} from "@/net/admin/register/index.js";
+import {getAccessToken} from "@/net/index.js";
 
 const route = useRoute();
 const testId = route.query.testId;
@@ -97,7 +98,12 @@ const handleFail = (row) => {
   updateForm.score = undefined
 
   updateRegisterStatus(updateForm, () => {
-    getRegisterList(searchForm, (data) => {
+    const params = {
+      testId: testId,
+      pageNum: searchForm.pageNum,
+      pageSize: searchForm.pageSize
+    }
+    getRegisterList(params, (data) => {
       tableData.rows = data.rows
       tableData.total = data.total
       showTable.value = true
@@ -111,12 +117,32 @@ const handleSetScore = (row) => {
   updateForm.status = undefined
 
   updateRegisterStatus(updateForm, () => {
-    getRegisterList(searchForm, (data) => {
+    const params = {
+      testId: testId,
+      pageNum: searchForm.pageNum,
+      pageSize: searchForm.pageSize
+    }
+    getRegisterList(params, (data) => {
       tableData.rows = data.rows
       tableData.total = data.total
       showTable.value = true
     })
   })
+}
+
+const handleUploadSuccess = (response) => {
+  if (response.code === 200) {
+    const params = {
+      testId: testId,
+      pageNum: searchForm.pageNum,
+      pageSize: searchForm.pageSize
+    }
+    getRegisterList(params, (data) => {
+      tableData.rows = data.rows
+      tableData.total = data.total
+      showTable.value = true
+    })
+  }
 }
 
 onMounted(() => {
@@ -141,9 +167,18 @@ onMounted(() => {
       </div>
       <div class="interaction-item">
         <div class="add-item">
-          <el-button @click=handleGetRegisterListExcel type="primary">上传修改后的表格</el-button>
-          <el-button @click=handleGetRegisterListExcel type="primary">导出所有报考人员表格</el-button>
+          <el-upload
+              class="upload-demo"
+              action="http://localhost:8081/api/admin/userTest/updateByExcel"
+              multiple
+              :limit="1"
+              :on-success="handleUploadSuccess"
+              :headers="{Authorization: 'Bearer ' + getAccessToken()}"
+          >
+            <el-button type="primary">上传修改后的表格</el-button>
+          </el-upload>
         </div>
+        <el-button style="margin-left: 10px;margin-bottom: 10px" @click=handleGetRegisterListExcel type="primary">导出所有报考人员表格</el-button>
       </div>
       <div v-if="showTable" class="data-table">
         <el-table :data="tableData.rows" stripe style="width: 100%">
