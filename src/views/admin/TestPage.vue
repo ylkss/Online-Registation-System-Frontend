@@ -121,6 +121,7 @@ const handleAddTestSessions = (row) => {
 
   testAddDialogShow.value = true
   NewTest.value = false
+  updateTest.value = false
   testAddForm.id = undefined
   testAddForm.name = row.name
   testAddForm.location = row.location

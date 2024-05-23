@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, reactive, ref, watch} from "vue";
-import {addTestRoom, getTestRooms} from "@/net/admin/testRoom/index.js";
+import {addTestRoom, deleteTestRoom, getTestRooms, updateTestRoom} from "@/net/admin/testRoom/index.js";
 
 const customColors = [
   { color: '#f56c6c', percentage: 100 },
@@ -70,19 +70,69 @@ const handlePageChange = (val) => {
 
 const addTestDialogShow = ref(false)
 const addTestRoomForm = reactive({
+  id:1,
   testId: 1,
   roomNum: '',
   maxUserNum: '',
   description: ''
 })
 
+const updateTest = ref(false)
+
 const handleAddTestRoomDialogShow = (row) => {
+  // 设置信息
+  updateTest.value = false
+  addTestRoomForm.roomNum = undefined
+  addTestRoomForm.maxUserNum = undefined
+  addTestRoomForm.description = undefined
+
   addTestDialogShow.value = true
   addTestRoomForm.testId = row.id
+  addTestRoomForm.id = undefined
+}
+
+const handleUpdateTestRoomDialogShow = (row) => {
+  updateTest.value = true
+  addTestDialogShow.value = true
+  addTestRoomForm.testId = undefined
+  addTestRoomForm.id = row.id
+  // 设置信息
+  addTestRoomForm.roomNum = row.roomNum
+  addTestRoomForm.maxUserNum = row.maxUserNum
+  addTestRoomForm.description = row.description
 }
 
 const handleAddTestRoom = () => {
   addTestRoom(addTestRoomForm, () => {
+    // 获取考场信息
+    const params = {
+      pageNum: searchForm.pageNum,
+      pageSize: searchForm.pageSize
+    }
+    getTestRooms(params, (data) => {
+      tableData.rows = data.rows
+      tableData.total = data.total
+    })
+  })
+}
+
+const handleUpdateTestRoom = () => {
+  updateTestRoom(addTestRoomForm, () => {
+    // 获取考场信息
+    const params = {
+      pageNum: searchForm.pageNum,
+      pageSize: searchForm.pageSize
+    }
+    getTestRooms(params, (data) => {
+      tableData.rows = data.rows
+      tableData.total = data.total
+    })
+  })
+}
+
+const handleDeleteTestRoom = (row) => {
+  // 删除考场
+  deleteTestRoom(row.id, () => {
     // 获取考场信息
     const params = {
       pageNum: searchForm.pageNum,
@@ -172,8 +222,8 @@ onMounted(() => {
                   <el-table-column label="位置描述" prop="description" />
                   <el-table-column fixed="right" label="Operations">
                     <template #default="{ row }">
-                      <el-button link type="primary" size="small">修改</el-button>
-                      <el-button link type="danger" size="small">删除</el-button>
+                      <el-button @click="handleUpdateTestRoomDialogShow(row)" link type="primary" size="small">修改</el-button>
+                      <el-button @click="handleDeleteTestRoom(row)" link type="danger" size="small">删除</el-button>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -242,7 +292,8 @@ onMounted(() => {
       </el-row>
     </el-form>
     <div style="display: flex;justify-content: center;margin-top: 20px;margin-bottom: 20px">
-      <el-button @click="handleAddTestRoom" type="primary" style="width: 240px">确认提交</el-button>
+      <el-button v-show="!updateTest" @click="handleAddTestRoom" type="primary" style="width: 240px">确认提交</el-button>
+      <el-button v-show="updateTest" @click="handleUpdateTestRoom" type="primary" style="width: 240px">确认更新</el-button>
     </div>
   </el-dialog>
 </template>

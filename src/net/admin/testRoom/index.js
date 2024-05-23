@@ -1,4 +1,4 @@
-import {put, get, post} from '@/net/index.js';
+import {put, deleteRequest, post} from '@/net/index.js';
 import {ElMessage} from "element-plus";
 
 function getTestRooms (data,success){
@@ -12,4 +12,18 @@ function addTestRoom (data, success){
     })
 }
 
-export { getTestRooms,addTestRoom }
+function updateTestRoom (data, success){
+    put(`/api/admin/testRoom/updateTestRoom`, data, () => {
+        ElMessage.success('更新成功')
+        success()
+    })
+}
+
+function deleteTestRoom (id, success){
+    deleteRequest(`/api/admin/testRoom/deleteTestRoom?id=${id}`, () => {
+        ElMessage.success('删除成功')
+        success()
+    })
+}
+
+export { getTestRooms,addTestRoom,updateTestRoom,deleteTestRoom }
